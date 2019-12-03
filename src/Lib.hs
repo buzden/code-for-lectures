@@ -38,6 +38,9 @@ instance Functor State where
 
 instance Applicative State where
   pure x = State $ Right ([], x)
+  State (Left e)  <*> _               = State $ Left e
+  _               <*> State (Left e)  = State $ Left e
+  State (Right p) <*> State (Right q) = State $ Right $ p <*> q
 
 instance Monad State where
   State (Left e)        >>= _ = State $ Left e

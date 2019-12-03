@@ -33,10 +33,17 @@ ioFunc = f 5
 rsFunc :: Either Error [String]
 rsFunc = getResOut $ f 5
 
-rsrFunc :: Either Error [String]
-rsrFunc = getResROut g 5
+rsrGunc :: Either Error [String]
+rsrGunc = getResROut g 5
+
+--ioGunc :: IO ()
+--ioGunc = g
 
 --- Entry point
 
 main :: IO ()
-main = ioFunc >> (Prelude.putStrLn $ show $ rsFunc)
+main = do
+  ioFunc
+  Prelude.putStrLn . show $ rsFunc
+  Prelude.putStrLn . show $ rsrGunc
+--  ioGunc

@@ -93,3 +93,8 @@ instance PrintConsole (ResR e r) where
 
 instance MonadReader r (ResR e r) where
   ask = ResR $ \r -> Right ([], r)
+
+---
+
+--instance Monad m => PrintConsole (StateT [String] m) where
+--  putStrLn s = update (++ [s])

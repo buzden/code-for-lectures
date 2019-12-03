@@ -14,6 +14,9 @@ class Monad m => MonadError e m where
 class Monad m => PrintConsole m where
   putStrLn :: String -> m ()
 
+class Monad m => MonadReader r m where
+  ask :: m r
+
 --- IO instances
 
 instance Show e => MonadError e IO where
@@ -55,3 +58,37 @@ instance MonadError e (Res e) where
 instance PrintConsole (Res e) where
   putStrLn s = Res $ Right ([s], ())
 
+---- Res' type
+
+newtype ResR e r a = ResR (r -> Either e ([String], a))
+
+getResROut :: ResR e r a -> r -> Either e [String]
+getResROut (ResR rei) r = case rei r of
+  Left e        -> Left e
+  Right (ss, _) -> Right ss
+
+instance Functor (ResR e r) where
+  fmap f (ResR rei) = ResR $ fmap (fmap (fmap f)) rei
+
+instance Applicative (ResR e r) where
+  pure x = ResR . const $ Right ([], x)
+  ResR (reil) <*> ResR (reir) = ResR $ \r -> case (reil r, reir r) of
+    (Left e , _)       -> Left e
+    (_      , Left e)  -> Left e
+    (Right p, Right q) -> Right $ p <*> q
+
+instance Monad (ResR e r) where
+  ResR rei >>= f = ResR $ \r -> case rei r of
+    Left e        -> Left e
+    Right (sl, a) -> let ResR fs = f a in case fs r of
+      Right (sr, b) -> Right (sl ++ sr, b)
+      er@(Left _)   -> er
+
+instance MonadError e (ResR e r) where
+  throwError = ResR . const . Left
+
+instance PrintConsole (ResR e r) where
+  putStrLn s = ResR . const $ Right ([s], ())
+
+instance MonadReader r (ResR e r) where
+  ask = ResR $ \r -> Right ([], r)

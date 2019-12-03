@@ -1,5 +1,9 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
+
 module Lib where
 
+import Control.Monad (when)
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
 
@@ -23,8 +27,11 @@ instance PrintConsole IO where
 
 ---- State type
 
-newtype State a = State {
-  getState :: Either Error ([String], a) }
+newtype State a = State (Either Error ([String], a))
+
+getStateOut :: State a -> Either Error [String]
+getStateOut (State (Left e))        = Left e
+getStateOut (State (Right (ss, _))) = Right ss
 
 instance Functor State where
   fmap f (State ei) = State $ fmap (fmap f) ei
@@ -33,28 +40,29 @@ instance Applicative State where
   pure x = State $ Right ([], x)
 
 instance Monad State where
-  st@(State (Left _))     >>= _ = st
-  (State (Right (sl, a))) >>= f = case f a of
-    Right (sr, b) -> State $ Right (sl ++ sr, b)
-    er@(Left e)   -> State er
+  State (Left e)        >>= _ = State $ Left e
+  State (Right (sl, a)) >>= f = case f a of
+    State (Right (sr, b)) -> State $ Right (sl ++ sr, b)
+    State er@(Left _)     -> State er
 
 ---- Nice State-aware instances
 
-instance MonadError e (State (Either e a)) where
+instance MonadError Error State where
   throwError = State . Left
 
-instance PrintConsole (State (Either e [String])) where
+instance PrintConsole State where
   putStrLn s = State $ Right ([s], ())
 
 --- Function
 
 data Error = DivByZero
+  deriving (Show)
 
 f :: (MonadError Error m, PrintConsole m)
   => Integer -> m ()
 f x = do
   when (x == 0) $ throwError DivByZero
-  putStrLn $ "100/x is " ++ (show $ 100 / x)
+  putStrLn $ "100/x is " ++ (show $ 100 `div` x)
 
 --- Runs
 
@@ -62,4 +70,4 @@ ioFunc :: IO ()
 ioFunc = f 5
 
 stFunc :: Either Error [String]
-stFunc = getState $ f 5
+stFunc = getStateOut $ f 5

@@ -23,10 +23,10 @@ f x = do
 ioFunc :: IO ()
 ioFunc = f 5
 
-stFunc :: Either Error [String]
-stFunc = getStateOut $ f 5
+rsFunc :: Either Error [String]
+rsFunc = getResOut $ f 5
 
 --- Entry point
 
 main :: IO ()
-main = ioFunc >> (Prelude.putStrLn $ show $ stFunc)
+main = ioFunc >> (Prelude.putStrLn $ show $ rsFunc)

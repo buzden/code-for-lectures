@@ -24,33 +24,34 @@ instance PrintConsole IO where
 
 --- Non-IO instances
 
----- State type
+---- Res type
 
-newtype State e a = State (Either e ([String], a))
+newtype Res e a = Res (Either e ([String], a))
 
-getStateOut :: State e a -> Either e [String]
-getStateOut (State (Left e))        = Left e
-getStateOut (State (Right (ss, _))) = Right ss
+getResOut :: Res e a -> Either e [String]
+getResOut (Res (Left e))        = Left e
+getResOut (Res (Right (ss, _))) = Right ss
 
-instance Functor (State e) where
-  fmap f (State ei) = State $ fmap (fmap f) ei
+instance Functor (Res e) where
+  fmap f (Res ei) = Res $ fmap (fmap f) ei
 
-instance Applicative (State e) where
-  pure x = State $ Right ([], x)
-  State (Left e)  <*> _               = State $ Left e
-  _               <*> State (Left e)  = State $ Left e
-  State (Right p) <*> State (Right q) = State $ Right $ p <*> q
+instance Applicative (Res e) where
+  pure x = Res $ Right ([], x)
+  Res (Left e)  <*> _             = Res $ Left e
+  _             <*> Res (Left e)  = Res $ Left e
+  Res (Right p) <*> Res (Right q) = Res $ Right $ p <*> q
 
-instance Monad (State e) where
-  State (Left e)        >>= _ = State $ Left e
-  State (Right (sl, a)) >>= f = case f a of
-    State (Right (sr, b)) -> State $ Right (sl ++ sr, b)
-    State er@(Left _)     -> State er
+instance Monad (Res e) where
+  Res (Left e)        >>= _ = Res $ Left e
+  Res (Right (sl, a)) >>= f = case f a of
+    Res (Right (sr, b)) -> Res $ Right (sl ++ sr, b)
+    Res er@(Left _)     -> Res er
 
----- Nice State-aware instances
+---- Nice Res-aware instances
 
-instance MonadError e (State e) where
-  throwError = State . Left
+instance MonadError e (Res e) where
+  throwError = Res . Left
 
-instance PrintConsole (State e) where
-  putStrLn s = State $ Right ([s], ())
+instance PrintConsole (Res e) where
+  putStrLn s = Res $ Right ([s], ())
+

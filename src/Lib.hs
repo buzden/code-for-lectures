@@ -3,7 +3,6 @@
 
 module Lib where
 
-import Control.Monad (when)
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
 
@@ -27,22 +26,22 @@ instance PrintConsole IO where
 
 ---- State type
 
-newtype State a = State (Either Error ([String], a))
+newtype State e a = State (Either e ([String], a))
 
-getStateOut :: State a -> Either Error [String]
+getStateOut :: State e a -> Either e [String]
 getStateOut (State (Left e))        = Left e
 getStateOut (State (Right (ss, _))) = Right ss
 
-instance Functor State where
+instance Functor (State e) where
   fmap f (State ei) = State $ fmap (fmap f) ei
 
-instance Applicative State where
+instance Applicative (State e) where
   pure x = State $ Right ([], x)
   State (Left e)  <*> _               = State $ Left e
   _               <*> State (Left e)  = State $ Left e
   State (Right p) <*> State (Right q) = State $ Right $ p <*> q
 
-instance Monad State where
+instance Monad (State e) where
   State (Left e)        >>= _ = State $ Left e
   State (Right (sl, a)) >>= f = case f a of
     State (Right (sr, b)) -> State $ Right (sl ++ sr, b)
@@ -50,27 +49,8 @@ instance Monad State where
 
 ---- Nice State-aware instances
 
-instance MonadError Error State where
+instance MonadError e (State e) where
   throwError = State . Left
 
-instance PrintConsole State where
+instance PrintConsole (State e) where
   putStrLn s = State $ Right ([s], ())
-
---- Function
-
-data Error = DivByZero
-  deriving (Show)
-
-f :: (MonadError Error m, PrintConsole m)
-  => Integer -> m ()
-f x = do
-  when (x == 0) $ throwError DivByZero
-  putStrLn $ "100/x is " ++ (show $ 100 `div` x)
-
---- Runs
-
-ioFunc :: IO ()
-ioFunc = f 5
-
-stFunc :: Either Error [String]
-stFunc = getStateOut $ f 5

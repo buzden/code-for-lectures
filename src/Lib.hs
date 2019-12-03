@@ -59,7 +59,7 @@ instance MonadError e (Res e) where
 instance PrintConsole (Res e) where
   putStrLn s = Res $ Right ([s], ())
 
----- Res' type
+---- ResR type
 
 newtype ResR e r a = ResR (r -> Either e ([String], a))
 

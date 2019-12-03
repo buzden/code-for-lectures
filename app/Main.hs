@@ -20,10 +20,7 @@ f x = do
 
 g :: (MonadError Error m, PrintConsole m,
       MonadReader Integer m) => m ()
-g = do
-  x <- ask
-  when (x == 0) $ throwError DivByZero
-  putStrLn $ "100/x is " ++ (show $ 100 `div` x)
+g = ask >>= f
 
 --- Runs
 

@@ -36,8 +36,8 @@ rsFunc = getResOut $ f 5
 rsrGunc :: Either Error [String]
 rsrGunc = getResROut g 5
 
---ioGunc :: IO ()
---ioGunc = g
+ioGunc :: IO ()
+ioGunc = g
 
 --- Entry point
 
@@ -46,4 +46,4 @@ main = do
   ioFunc
   Prelude.putStrLn . show $ rsFunc
   Prelude.putStrLn . show $ rsrGunc
---  ioGunc
+  ioGunc

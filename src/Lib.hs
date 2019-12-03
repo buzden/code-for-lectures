@@ -96,5 +96,10 @@ instance MonadReader r (ResR e r) where
 
 ---
 
+instance MonadReader Integer IO where
+  ask = Prelude.putStrLn "Please enter the number" >> readLn
+
+---
+
 --instance Monad m => PrintConsole (StateT [String] m) where
 --  putStrLn s = update (++ [s])

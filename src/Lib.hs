@@ -1,5 +1,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
+{-# LANGUAGE FunctionalDependencies #-}
 
 module Lib where
 
@@ -14,7 +15,7 @@ class Monad m => MonadError e m where
 class Monad m => PrintConsole m where
   putStrLn :: String -> m ()
 
-class Monad m => MonadReader r m where
+class Monad m => MonadReader r m | m -> r where
   ask :: m r
 
 --- IO instances

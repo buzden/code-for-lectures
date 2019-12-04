@@ -38,7 +38,7 @@ ioGunc :: IO ()
 ioGunc = g
 
 rsrGunc' :: Integer -> Either Error [String]
-rsrGunc' x = unRes $ runReaderT g x
+rsrGunc' = unRes . runReaderT g
 
 --- Entry point
 

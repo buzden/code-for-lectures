@@ -3,6 +3,7 @@
 module Main where
 
 import Control.Monad (when)
+import Control.Monad.Reader (runReaderT)
 import Lib
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
@@ -35,6 +36,9 @@ rsrGunc = getResROut g 5
 
 ioGunc :: IO ()
 ioGunc = g
+
+rsrGunc' :: Integer -> Either Error [String]
+rsrGunc' x = getResOut $ runReaderT g x
 
 --- Entry point
 

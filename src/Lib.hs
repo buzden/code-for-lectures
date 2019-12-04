@@ -4,6 +4,7 @@
 
 module Lib where
 
+import Control.Monad.Reader (ReaderT(ReaderT))
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
 
@@ -98,6 +99,17 @@ instance MonadReader r (ResR e r) where
 
 instance MonadReader Integer IO where
   ask = Prelude.putStrLn "Please enter the number" >> readLn
+
+---
+
+instance Monad m => MonadReader r (ReaderT r m) where
+  ask = ReaderT $ \r -> pure r
+
+instance MonadError e m => MonadError e (ReaderT r m) where
+  throwError = ReaderT . const . throwError
+
+instance PrintConsole m => PrintConsole (ReaderT r m) where
+  putStrLn = ReaderT . const . putStrLn
 
 ---
 

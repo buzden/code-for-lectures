@@ -3,7 +3,9 @@
 module Main where
 
 import Control.Monad (when)
-import Control.Monad.Reader (runReaderT)
+import Control.Monad.Except (runExceptT)
+import Control.Monad.Reader (runReaderT, runReader)
+import Control.Monad.State.Lazy (execStateT)
 import Lib
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
@@ -39,6 +41,11 @@ ioGunc = g
 
 rsrGunc' :: Integer -> Either Error [String]
 rsrGunc' = unRes . runReaderT g
+
+rsrGunc'' :: Integer -> Either Error [String]
+rsrGunc'' = runReader . runExceptT . flip execStateT [] $ g
+
+rsrGunc_ g = runReader . runExceptT . flip execStateT [] $ g
 
 --- Entry point
 

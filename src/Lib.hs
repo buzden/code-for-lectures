@@ -1,10 +1,14 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Lib where
 
+import Control.Monad.Except (ExceptT(ExceptT))
 import Control.Monad.Reader (ReaderT(ReaderT))
+import Control.Monad.State (StateT, modify)
+import Control.Monad.Trans.Class (MonadTrans, lift)
 import Prelude hiding (putStrLn)
 import qualified Prelude (putStrLn)
 
@@ -100,18 +104,24 @@ instance MonadReader r (Fer e r) where
 instance MonadReader Integer IO where
   ask = Prelude.putStrLn "Please enter the number" >> readLn
 
+instance Monad m => MonadError e (ExceptT e m) where
+  throwError = ExceptT . pure . Left
+
 ---
 
 instance Monad m => MonadReader r (ReaderT r m) where
   ask = ReaderT $ \r -> pure r
 
-instance MonadError e m => MonadError e (ReaderT r m) where
-  throwError = ReaderT . const . throwError
+instance {-# OVERLAPPABLE #-} (MonadError e m, MonadTrans t, Monad (t m)) => MonadError e (t m) where
+  throwError = lift . throwError
 
-instance PrintConsole m => PrintConsole (ReaderT r m) where
-  putStrLn = ReaderT . const . putStrLn
+instance {-# OVERLAPPABLE #-} (PrintConsole m, MonadTrans t, Monad (t m)) => PrintConsole (t m) where
+  putStrLn = lift . putStrLn
+
+instance {-# OVERLAPPABLE #-} (MonadReader r m, MonadTrans t, Monad (t m)) => MonadReader r (t m) where
+  ask = lift ask
 
 ---
 
---instance Monad m => PrintConsole (StateT [String] m) where
---  putStrLn s = update (++ [s])
+instance Monad m => PrintConsole (StateT [String] m) where
+  putStrLn s = modify (++ [s])

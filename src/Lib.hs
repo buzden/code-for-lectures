@@ -73,7 +73,7 @@ instance Functor (ResR e r) where
 
 instance Applicative (ResR e r) where
   pure x = ResR . const $ Right ([], x)
-  ResR (reil) <*> ResR (reir) = ResR $ \r -> case (reil r, reir r) of
+  ResR reil <*> ResR reir = ResR $ \r -> case (reil r, reir r) of
     (Left e , _)       -> Left e
     (_      , Left e)  -> Left e
     (Right p, Right q) -> Right $ p <*> q

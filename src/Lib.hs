@@ -33,9 +33,9 @@ instance PrintConsole IO where
 
 newtype Res e a = Res (Either e ([String], a))
 
-getResOut :: Res e a -> Either e [String]
-getResOut (Res (Left e))        = Left e
-getResOut (Res (Right (ss, _))) = Right ss
+unRes :: Res e a -> Either e [String]
+unRes (Res (Left e))        = Left e
+unRes (Res (Right (ss, _))) = Right ss
 
 instance Functor (Res e) where
   fmap f (Res ei) = Res $ fmap (fmap f) ei
@@ -60,40 +60,40 @@ instance MonadError e (Res e) where
 instance PrintConsole (Res e) where
   putStrLn s = Res $ Right ([s], ())
 
----- ResR type
+---- Fer type
 
-newtype ResR e r a = ResR (r -> Either e ([String], a))
+newtype Fer e r a = Fer (r -> Either e ([String], a))
 
-getResROut :: ResR e r a -> r -> Either e [String]
-getResROut (ResR rei) r = case rei r of
+unFer :: Fer e r a -> r -> Either e [String]
+unFer (Fer rei) r = case rei r of
   Left e        -> Left e
   Right (ss, _) -> Right ss
 
-instance Functor (ResR e r) where
-  fmap f (ResR rei) = ResR $ fmap (fmap (fmap f)) rei
+instance Functor (Fer e r) where
+  fmap f (Fer rei) = Fer $ fmap (fmap (fmap f)) rei
 
-instance Applicative (ResR e r) where
-  pure x = ResR . const $ Right ([], x)
-  ResR reil <*> ResR reir = ResR $ \r -> case (reil r, reir r) of
+instance Applicative (Fer e r) where
+  pure x = Fer . const $ Right ([], x)
+  Fer reil <*> Fer reir = Fer $ \r -> case (reil r, reir r) of
     (Left e , _)       -> Left e
     (_      , Left e)  -> Left e
     (Right p, Right q) -> Right $ p <*> q
 
-instance Monad (ResR e r) where
-  ResR rei >>= f = ResR $ \r -> case rei r of
+instance Monad (Fer e r) where
+  Fer rei >>= f = Fer $ \r -> case rei r of
     Left e        -> Left e
-    Right (sl, a) -> let ResR fs = f a in case fs r of
+    Right (sl, a) -> let Fer fs = f a in case fs r of
       Right (sr, b) -> Right (sl ++ sr, b)
       er@(Left _)   -> er
 
-instance MonadError e (ResR e r) where
-  throwError = ResR . const . Left
+instance MonadError e (Fer e r) where
+  throwError = Fer . const . Left
 
-instance PrintConsole (ResR e r) where
-  putStrLn s = ResR . const $ Right ([s], ())
+instance PrintConsole (Fer e r) where
+  putStrLn s = Fer . const $ Right ([s], ())
 
-instance MonadReader r (ResR e r) where
-  ask = ResR $ \r -> Right ([], r)
+instance MonadReader r (Fer e r) where
+  ask = Fer $ \r -> Right ([], r)
 
 ---
 

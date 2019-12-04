@@ -29,16 +29,16 @@ ioFunc :: IO ()
 ioFunc = f 5
 
 rsFunc :: Either Error [String]
-rsFunc = getResOut $ f 5
+rsFunc = unRes $ f 5
 
 rsrGunc :: Either Error [String]
-rsrGunc = getResROut g 5
+rsrGunc = unFer g 5
 
 ioGunc :: IO ()
 ioGunc = g
 
 rsrGunc' :: Integer -> Either Error [String]
-rsrGunc' x = getResOut $ runReaderT g x
+rsrGunc' x = unRes $ runReaderT g x
 
 --- Entry point
 

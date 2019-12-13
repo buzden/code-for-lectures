@@ -14,7 +14,8 @@ spec = do
     it "calculates right answer" . property $ \(NonNegative n) ->
       fact n === product [1 .. n]
 
-    it "two variants are same" pending
+    it "two variants are same" . property $ \(NonNegative n) ->
+      fact n === fact' n
 
   describe "N-M-List function" do
 

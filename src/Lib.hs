@@ -15,3 +15,9 @@ nmlist :: Integer -> Integer -> [Integer]
 nmlist n m | n > m     = []
            | n == m    = [n]
            | otherwise = n : nmlist (n + 1) m
+
+nmlist' :: Integer -> Integer -> [Integer]
+nmlist' = fix $ \rec n m -> case () of
+  () | n > m     -> []
+     | n == m    -> [n]
+     | otherwise -> n : nmlist (n + 1) m

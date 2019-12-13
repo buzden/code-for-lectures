@@ -22,4 +22,5 @@ spec = do
     it "calculates right answer" . property $ \n m ->
       nmlist n m === [n .. m]
 
-    it "two variants are same" pending
+    it "two variants are same" . property $ \n m ->
+      nmlist n m === nmlist' n m

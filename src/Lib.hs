@@ -1,6 +1,9 @@
 module Lib where
 
-import Data.Function (fix)
+--import Data.Function (fix)
+
+fix :: (a -> a) -> a
+fix f = x where x = f x
 
 fact :: Integer -> Integer
 fact 0 = 1

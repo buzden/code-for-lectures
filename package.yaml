@@ -32,3 +32,14 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - to-lecture
+
+tests:
+  to-lecture-tests:
+    build-tools: hspec-discover
+    main: TestMain.hs
+    source-dirs:
+    - test
+    dependencies:
+    - to-lecture
+    - hspec
+    - QuickCheck

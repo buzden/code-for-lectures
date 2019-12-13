@@ -7,7 +7,7 @@ import Test.Hspec
 import Test.QuickCheck
 
 spec :: Spec
-spec = describe "Lecture properties" do
+spec = do
 
   describe "Factorial function" do
 

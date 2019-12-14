@@ -1,4 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module LibSpec where
 
@@ -24,3 +25,11 @@ spec = do
 
     it "two variants are same" . property $ \n m ->
       nmlist n m === nmlist' n m
+
+  describe "product function" do
+
+    it "calculates right answer" . property $ \(xs :: [Integer]) ->
+      prod xs === product xs
+
+    it "two variants are same" . property $ \(xs :: [Integer]) ->
+      prod xs === prod' xs

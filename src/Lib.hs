@@ -5,6 +5,8 @@ module Lib where
 fix :: (a -> a) -> a
 fix f = x where x = f x
 
+---
+
 fact :: Integer -> Integer
 fact 0 = 1
 fact n = n * fact (n - 1)
@@ -24,3 +26,14 @@ nmlist' = fix $ \rec n m -> case () of
   () | n > m     -> []
      | n == m    -> [n]
      | otherwise -> n : nmlist (n + 1) m
+
+---
+
+prod :: Num a => [a] -> a
+prod []     = 1
+prod (x:xs) = x * prod xs
+
+prod' :: Num a => [a] -> a
+prod' = fix $ \rec l -> case l of
+  []     -> 1
+  (x:xs) -> x * rec xs

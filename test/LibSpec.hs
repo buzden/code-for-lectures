@@ -33,3 +33,6 @@ spec = do
 
     it "two variants are same" . property $ \(xs :: [Integer]) ->
       prod xs === prod' xs
+
+    it "U-variant is same too" . property $ \(xs :: [Integer]) ->
+      prod xs === fix prodU xs

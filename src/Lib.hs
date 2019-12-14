@@ -37,3 +37,7 @@ prod' :: Num a => [a] -> a
 prod' = fix $ \rec l -> case l of
   []     -> 1
   (x:xs) -> x * rec xs
+
+prodU :: Num a => ([a] -> a) -> [a] -> a
+prodU rec []     = 1
+prodU rec (x:xs) = x * rec xs

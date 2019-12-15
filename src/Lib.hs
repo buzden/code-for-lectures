@@ -41,3 +41,7 @@ prod' = fix $ \rec l -> case l of
 prodU :: Num a => ([a] -> a) -> [a] -> a
 prodU rec []     = 1
 prodU rec (x:xs) = x * rec xs
+
+foldU :: Monoid a => ([a] -> a) -> [a] -> a
+foldU rec []     = mempty
+foldU rec (x:xs) = x <> rec xs

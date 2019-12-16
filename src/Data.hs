@@ -28,3 +28,7 @@ jsToStr :: JsonValue -> String
 jsToStr JsonNull = "null"
 jsToStr (JsonArray vs) =
   "[" ++ (intercalate ", " . map jsToStr $ vs) ++ "]"
+
+foldBT :: (b -> b -> b) -> (a -> b) -> BinTree a -> b
+foldBT _  lf (BLeaf a)   = lf a
+foldBT nf lf (BNode l r) = nf (foldBT nf lf l) (foldBT nf lf r)

@@ -32,3 +32,8 @@ jsToStr (JsonArray vs) =
 foldBT :: (b -> b -> b) -> (a -> b) -> BinTree a -> b
 foldBT _  lf (BLeaf a)   = lf a
 foldBT nf lf (BNode l r) = nf (foldBT nf lf l) (foldBT nf lf r)
+
+---
+data X_IA a = X_IA a (Int -> a) (String -> Int -> a)
+
+filter'' f = foldr (\x tl -> if f x then x:tl else tl) []

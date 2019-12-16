@@ -1,3 +1,5 @@
+{-# LANGUAGE KindSignatures #-}
+
 module Data where
 
 import Data.List (intercalate)
@@ -37,3 +39,5 @@ foldBT nf lf (BNode l r) = nf (foldBT nf lf l) (foldBT nf lf r)
 data X_IA a = X_IA a (Int -> a) (String -> Int -> a)
 
 filter'' f = foldr (\x tl -> if f x then x:tl else tl) []
+
+newtype Fix (f :: * -> *) = Fix (f (Fix f))

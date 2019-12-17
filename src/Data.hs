@@ -6,6 +6,7 @@ module Data where
 import Data.List (intercalate)
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH (makeBaseFunctor)
+import Text.Read (readMaybe)
 
 data List a = Nil | Cons a (List a)
 
@@ -56,14 +57,11 @@ f = snd . foldr (\s (i, r) -> (i + 1, show i ++ " " ++ s ++ "; " ++ r)) (1, "")
 
 ---
 
-parseRational :: String -> Maybe Rational
-parseRational = undefined
-
 enrat :: JsonValue -> JsonValue
 enrat x@JsonNull       = x
 enrat x@(JsonBool _)   = x
 enrat x@(JsonNumber _) = x
-enrat x@(JsonString s) = maybe x JsonNumber $ parseRational s
+enrat x@(JsonString s) = maybe x JsonNumber $ readMaybe s
 enrat (JsonArray vs)   = JsonArray $ fmap enrat vs
 enrat (JsonObject svs) = JsonObject $ fmap (fmap enrat) svs
 

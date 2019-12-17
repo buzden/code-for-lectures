@@ -77,3 +77,38 @@ showAlg (BNodeF l r) = "{ left: " ++ l ++
 depthAlg :: BinTreeF a Integer -> Integer
 depthAlg (BLeafF _)   = 1
 depthAlg (BNodeF l r) = l + r
+
+---
+
+makeBaseFunctor ''JsonValue
+
+enratAlg :: JsonValueF JsonValue -> JsonValue
+enratAlg x@(JsonStringF s) = maybe (embed x) JsonNumber $ readMaybe s
+enratAlg x = embed x
+
+enrat' :: JsonValue -> JsonValue
+enrat' = cata enratAlg
+
+---
+
+mapLeft _ (Right r) = Right r
+mapLeft f (Left l) = Left $ f l
+
+data XF r = X1F Int | X2F String (Either Int r)
+  deriving (Functor)
+
+--instance Functor XF where
+--  fmap _ (X1F i)    = X1F i
+--  fmap f (X2F s ei) = X2F s $ fmap f ei
+
+data YF r = Y1F Int | Y2F String (Either r Int)
+
+instance Functor YF where
+  fmap _ (Y1F i)    = Y1F i
+  fmap f (Y2F s ei) = Y2F s $ mapLeft f ei
+
+data ZF r = Z1F Int | Z2F String (Either r (Int, r))
+
+instance Functor ZF where
+  fmap _ (Z1F i)    = Z1F i
+  fmap f (Z2F s ei) = Z2F s $ mapLeft f . fmap (fmap f) $ ei

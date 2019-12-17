@@ -1,8 +1,11 @@
 {-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE TemplateHaskell, TypeFamilies, DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
 
 module Data where
 
 import Data.List (intercalate)
+import Data.Functor.Foldable
+import Data.Functor.Foldable.TH (makeBaseFunctor)
 
 data List a = Nil | Cons a (List a)
 
@@ -46,7 +49,7 @@ data X_IA a = X_IA a (Int -> a) (String -> Int -> a)
 
 filter'' f = foldr (\x tl -> if f x then x:tl else tl) []
 
-newtype Fix (f :: * -> *) = Fix (f (Fix f))
+-- newtype Fix (f :: * -> *) = Fix (f (Fix f))
 
 f :: [String] -> String
 f = snd . foldr (\s (i, r) -> (i + 1, show i ++ " " ++ s ++ "; " ++ r)) (1, "")
@@ -63,3 +66,16 @@ enrat x@(JsonNumber _) = x
 enrat x@(JsonString s) = maybe x JsonNumber $ parseRational s
 enrat (JsonArray vs)   = JsonArray $ fmap enrat vs
 enrat (JsonObject svs) = JsonObject $ fmap (fmap enrat) svs
+
+---
+
+makeBaseFunctor ''BinTree
+
+showAlg :: Show a => BinTreeF a String -> String
+showAlg (BLeafF a)   = show a
+showAlg (BNodeF l r) = "{ left: " ++ l ++
+                     ", right: " ++ r ++ "}"
+
+depthAlg :: BinTreeF a Integer -> Integer
+depthAlg (BLeafF _)   = 1
+depthAlg (BNodeF l r) = l + r

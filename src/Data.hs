@@ -89,6 +89,12 @@ enratAlg x = embed x
 enrat' :: JsonValue -> JsonValue
 enrat' = cata enratAlg
 
+enratx :: Fix JsonValueF -> Fix JsonValueF
+enratx = cata eAlg where
+  eAlg :: JsonValueF (Fix JsonValueF) -> Fix JsonValueF
+  eAlg x@(JsonStringF s) = Fix . maybe x JsonNumberF $ readMaybe s
+  eAlg x = Fix x
+
 enratAlg'' :: JsonValue -> JsonValue
 enratAlg'' x@(JsonString s) = maybe x JsonNumber $ readMaybe s
 enratAlg'' x = x

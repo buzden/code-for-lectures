@@ -89,6 +89,13 @@ enratAlg x = embed x
 enrat' :: JsonValue -> JsonValue
 enrat' = cata enratAlg
 
+enratAlg'' :: JsonValue -> JsonValue
+enratAlg'' x@(JsonString s) = maybe x JsonNumber $ readMaybe s
+enratAlg'' x = x
+
+enrat'' :: JsonValue -> JsonValue
+enrat'' = cata $ enratAlg'' . embed
+
 ---
 
 mapLeft _ (Right r) = Right r

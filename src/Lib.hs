@@ -1,7 +1,7 @@
 module Lib where
 
 --import Data.Function (fix)
-import Data.List (unfoldr)
+import Data.List (delete, unfoldr)
 
 fix :: (a -> a) -> a
 fix f = x where x = f x
@@ -31,6 +31,12 @@ nmlist' = fix $ \rec n m -> case () of
 nmlist'' n m = unfoldr f n where
   f x | x > m     = Nothing
       | otherwise = Just (x, x + 1)
+
+insertSort :: Ord a => [a] -> [a]
+insertSort = unfoldr f where
+  f [] = Nothing
+  f xs = Just (m, delete m xs)
+    where m = minimum xs
 
 ---
 

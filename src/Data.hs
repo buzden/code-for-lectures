@@ -90,10 +90,10 @@ enrat' :: JsonValue -> JsonValue
 enrat' = cata enratAlg
 
 enratx :: Fix JsonValueF -> Fix JsonValueF
-enratx = cata eAlg where
-  eAlg :: JsonValueF (Fix JsonValueF) -> Fix JsonValueF
-  eAlg x@(JsonStringF s) = Fix . maybe x JsonNumberF $ readMaybe s
-  eAlg x = Fix x
+enratx = cata $ Fix . eAlg where
+  eAlg :: JsonValueF (Fix JsonValueF) -> JsonValueF (Fix JsonValueF)
+  eAlg x@(JsonStringF s) = maybe x JsonNumberF $ readMaybe s
+  eAlg x = x
 
 enratAlg'' :: JsonValue -> JsonValue
 enratAlg'' x@(JsonString s) = maybe x JsonNumber $ readMaybe s

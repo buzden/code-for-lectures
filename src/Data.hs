@@ -78,6 +78,26 @@ depthAlg :: BinTreeF a Integer -> Integer
 depthAlg (BLeafF _)   = 1
 depthAlg (BNodeF l r) = l + r
 
+--- Colored show
+
+data Color = Red | Green | Blue
+  deriving (Show, Eq, Ord, Enum, Bounded)
+
+nextColor :: Color -> Color
+nextColor x | x == maxBound = minBound
+            | otherwise     = succ x
+
+colorsAlg :: BinTreeF a Color -> Color
+colorsAlg (BLeafF _)   = Red
+colorsAlg (BNodeF l r) = nextColor $ max l r
+
+colorify :: (Color, String) -> String
+colorify (c, s) = "<font color=" ++ show c ++ ">"
+           ++ s ++ "</font>"
+
+showColored :: Show a => BinTree a -> String
+showColored = zygo colorsAlg (showAlg . fmap colorify)
+
 ---
 
 makeBaseFunctor ''JsonValue

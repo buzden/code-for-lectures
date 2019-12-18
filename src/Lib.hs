@@ -1,6 +1,7 @@
 module Lib where
 
 --import Data.Function (fix)
+import Data.List (unfoldr)
 
 fix :: (a -> a) -> a
 fix f = x where x = f x
@@ -26,6 +27,10 @@ nmlist' = fix $ \rec n m -> case () of
   () | n > m     -> []
      | n == m    -> [n]
      | otherwise -> n : nmlist (n + 1) m
+
+nmlist'' n m = unfoldr f n where
+  f x | x > m     = Nothing
+      | otherwise = Just (x, x + 1)
 
 ---
 

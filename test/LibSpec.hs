@@ -26,6 +26,9 @@ spec = do
     it "two variants are same" . property $ \n m ->
       nmlist n m === nmlist' n m
 
+    it "unfold variant is the same" . property $ \n m ->
+      nmlist n m === nmlist'' n m
+
   describe "product function" do
 
     it "calculates right answer" . property $ \(xs :: [Integer]) ->

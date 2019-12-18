@@ -76,7 +76,7 @@ showAlg (BNodeF l r) = "{ left: " ++ l ++
 
 depthAlg :: BinTreeF a Integer -> Integer
 depthAlg (BLeafF _)   = 1
-depthAlg (BNodeF l r) = l + r
+depthAlg (BNodeF l r) = 1 + max l r
 
 --- Colored show
 

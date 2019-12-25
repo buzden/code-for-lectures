@@ -15,15 +15,15 @@ eqProperties _ = describe "Eq typeclass" do
   describe "== operation" do
 
     it "== reflexivity" . property $ \(x :: a) ->
-      x == x `shouldBe` True
+      x == x
 
     it "== symmetry" . property $ \(x :: a) (y :: a) ->
-      x == y ==> y == x `shouldBe` True
+      x == y ==> y == x
 
   describe "/= operation" do
 
     it "equals to not ==" . property $ \(x :: a) (y :: a) ->
-      x == y ==> not (x /= y) `shouldBe` True
+      x == y ==> not (x /= y)
 
 spec :: Spec
 spec = do

@@ -1,5 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ExplicitForAll #-}
 
 module LibSpec where
 
@@ -8,7 +9,7 @@ import Lib
 import Test.Hspec
 import Test.QuickCheck
 
-eqProperties :: (Eq a, Arbitrary a) => Proxy a -> Spec
+eqProperties :: forall a. (Eq a, Arbitrary a, Show a) => Proxy a -> Spec
 eqProperties _ = describe "Eq typeclass" do
 
   describe "== operation" do

@@ -20,10 +20,37 @@ eqProperties _ = describe "Eq typeclass" do
     it "== symmetry" . property $ \(x :: a) (y :: a) ->
       x == y ==> y == x
 
+    it "== transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
+      x == y && y == z ==> x == z
+
   describe "/= operation" do
 
     it "equals to not ==" . property $ \(x :: a) (y :: a) ->
-      x == y ==> not (x /= y)
+      (x == y) === not (x /= y)
+
+ordProperties :: forall a. (Ord a, Arbitrary a, Show a) => Proxy a -> Spec
+ordProperties _ = describe "Ord typeclass" do
+
+  describe "< operation" do
+
+    it "< anti-reflexivity" . property $ \(x :: a) ->
+      not (x < x)
+
+    it "< anti-symmetry" . property $ \(x :: a) (y :: a) ->
+      x < y ==> not (y < x)
+
+    it "< transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
+      x < y && y < z ==> x < z
+
+  describe "<= operation" do
+
+    it "<= is < or ==" . property $ \(x :: a) (y :: a) ->
+      (x <= y) === (x < y || x == y)
+
+  describe "> operation" do
+
+    it "> is not <" . property $ \(x :: a) (y :: a) ->
+      (x > y) === not (x < y)
 
 spec :: Spec
 spec = do

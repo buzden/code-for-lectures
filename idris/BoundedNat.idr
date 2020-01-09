@@ -9,7 +9,7 @@ namespace SoLtParam
 
   ats : (xs : List a) -> (n : Nat) -> {auto ok : So (n `lt` length xs)} -> a
   ats (x::_) Z = x
-  ats (_::xs) (S k) {ok} = ats xs k
+  ats (_::xs) (S k) {ok} = xs `ats` k
   ats [] Z impossible
   ats [] (S k) impossible
 

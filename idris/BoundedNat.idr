@@ -5,6 +5,13 @@ import Data.So
 
 %default total
 
+namespace MaybeResult
+
+  atm : (xs : List a) -> (n : Nat) -> Maybe a
+  atm []      _     = Nothing
+  atm (x::_)  Z     = Just x
+  atm (_::xs) (S n) = xs `atm` n
+
 namespace SoLtParam
 
   ats : (xs : List a) -> (n : Nat) -> {auto ok : So (n `lt` length xs)} -> a

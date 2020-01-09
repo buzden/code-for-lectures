@@ -15,10 +15,10 @@ namespace MaybeResult
 namespace SoLtParam
 
   ats : (xs : List a) -> (n : Nat) -> {auto ok : So (n `lt` length xs)} -> a
-  ats (x::_) Z = x
+  ats (x::_)  Z          = x
   ats (_::xs) (S k) {ok} = xs `ats` k
-  ats [] Z impossible
-  ats [] (S k) impossible
+  ats []      Z     impossible
+  ats []      (S k) impossible
 
   x0s : Char
   x0s = ['1', '2', '3'] `ats` 0
@@ -55,7 +55,7 @@ namespace SoJustParam
 namespace LteParam
 
   atl : (xs : List a) -> (n : Nat) -> {auto ok : LT n (length xs)} -> a
-  atl (x::_) Z = x
+  atl (x::_)  Z                        = x
   atl (_::xs) (S n) {ok = (LTESucc _)} = xs `atl` n
 
   x0l : Char
@@ -73,9 +73,9 @@ namespace CumstomWithLte
     MkBoundedNat : (n : Nat) -> {auto ok : LT n b} -> BoundedNat b
 
   atb : (xs : List a) -> (n : BoundedNat (length xs)) -> a
-  atb (x::_) (MkBoundedNat Z) = x
+  atb (x::_)  (MkBoundedNat Z)                        = x
   atb (_::xs) (MkBoundedNat (S n) {ok = (LTESucc _)}) = xs `atb` MkBoundedNat n
-  atb [] (MkBoundedNat n) impossible
+  atb []      (MkBoundedNat n) impossible
 
   x0b : Char
   x0b = ['1', '2', '3'] `atb` MkBoundedNat 0
@@ -89,7 +89,7 @@ namespace CumstomWithLte
 namespace FinParam
 
   atf : (xs : List a) -> Fin (length xs) -> a
-  atf (x::_) FZ = x
+  atf (x::_)  FZ     = x
   atf (_::xs) (FS n) = xs `atf` n
 
   x0f : Char

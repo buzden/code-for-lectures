@@ -70,21 +70,21 @@ namespace LteParam
 namespace CumstomWithLte
 
   data BoundedNat : Nat -> Type where
-    MkBoundedNat : (n : Nat) -> {auto ok : LT n b} -> BoundedNat b
+    MkBNat : (n : Nat) -> {auto ok : LT n b} -> BoundedNat b
 
   atb : (xs : List a) -> (n : BoundedNat (length xs)) -> a
-  atb (x::_)  (MkBoundedNat Z)                        = x
-  atb (_::xs) (MkBoundedNat (S n) {ok = (LTESucc _)}) = xs `atb` MkBoundedNat n
-  atb []      (MkBoundedNat n) impossible
+  atb (x::_)  (MkBNat Z)                        = x
+  atb (_::xs) (MkBNat (S n) {ok = (LTESucc _)}) = xs `atb` MkBNat n
+  atb []      (MkBNat n) impossible
 
   x0b : Char
-  x0b = ['1', '2', '3'] `atb` MkBoundedNat 0
+  x0b = ['1', '2', '3'] `atb` MkBNat 0
 
   x2b : Char
-  x2b = ['1', '2', '3'] `atb` MkBoundedNat 2
+  x2b = ['1', '2', '3'] `atb` MkBNat 2
 
   --x3b : Char
-  --x3b = ['1', '2', '3'] `atb` MkBoundedNat 3
+  --x3b = ['1', '2', '3'] `atb` MkBNat 3
 
 namespace FinParam
 

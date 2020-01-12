@@ -87,7 +87,7 @@ namespace CumstomWithLte
   data BoundedNat : Nat -> Type where
     MkBNat : (n : Nat) -> {auto ok : LT n b} -> BoundedNat b
 
-  atb : (xs : List a) -> (n : BoundedNat (length xs)) -> a
+  atb : (xs : List a) -> BoundedNat (length xs) -> a
   atb (x::_)  (MkBNat Z)                        = x
   atb (_::xs) (MkBNat (S n) {ok = (LTESucc _)}) = xs `atb` MkBNat n
   atb []      (MkBNat n) impossible

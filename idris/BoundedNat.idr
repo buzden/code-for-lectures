@@ -67,6 +67,21 @@ namespace LteParam
   --x3l : Char
   --x3l = ['1', '2', '3'] `atl` 3
 
+namespace InBoundsParam
+
+  ati : (xs : List a) -> (n : Nat) -> {auto ok : InBounds n xs} -> a
+  ati (x::_)  Z                      = x
+  ati (_::xs) (S k) {ok = InLater _} = xs `ati` k
+
+  x0i : Char
+  x0i = ['1', '2', '3'] `ati` 0
+
+  x2i : Char
+  x2i = ['1', '2', '3'] `ati` 2
+
+  --x3i : Char
+  --x3i = ['1', '2', '3'] `ati` 3
+
 namespace CumstomWithLte
 
   data BoundedNat : Nat -> Type where

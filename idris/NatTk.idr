@@ -20,3 +20,18 @@ Equ Nat where
   eqIsNotNeq n m with (n ==. m) proof p
     | True  = Refl
     | False = Refl
+
+Ordu Nat where
+  Z     <. (S _) = True
+  (S n) <. (S m) = n <. m
+  _     <. _     = False
+
+  ltAntireflexivity n = ?lt_antiref_rhs
+  ltAntisymmetry n m p = ?lt_antisym_rhs
+  ltTransitivity n m k p q = ?lt_trans_rhs
+
+  lteIsLtOrE n m = ?lte_lt_e_rhs
+
+  ltInverseOfGt n m = ?lt_inverse_gt_rhs
+
+  gteIsGtOrE n m = ?gte_gt_e_rhs

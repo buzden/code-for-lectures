@@ -1,40 +1,44 @@
 module Tk
 
-import Data.So
+import public Data.So
 
 %default total
 %access public export
 
-interface Eq a where
-  (==) : a -> a -> Bool
+infix 6 ==., /=.
 
-  eqReflexivity  : (x : a) -> So (x == x)
-  eqSymmetricity : (x, y : a) -> So (x == y) -> So (y == x)
-  eqTransitivity : (x, y, z : a) -> So (x == y) -> So (y == z) -> So (x == z)
+interface Equ a where
+  (==.) : a -> a -> Bool
 
-  (/=) : a -> a -> Bool
-  x /= y = not $ x == y
+  eqReflexivity  : (x : a) -> So (x ==. x)
+  eqSymmetricity : (x, y : a) -> So (x ==. y) -> So (y ==. x)
+  eqTransitivity : (x, y, z : a) -> So (x ==. y) -> So (y ==. z) -> So (x ==. z)
 
-  eqIsNotNeq : (x, y : a) -> x == y = not (x /= y)
+  (/=.) : a -> a -> Bool
+  x /=. y = not $ x ==. y
 
-interface Tk.Eq a => Ord a where
-  (<) : a -> a -> Bool
+  eqIsNotNeq : (x, y : a) -> x ==. y = not (x /=. y)
 
-  ltAntireflexivity : (x : a) -> So (not $ x < x)
-  ltAntisymmetry : (x, y : a) -> So (x < y) -> So (not $ y < x)
-  ltTransitivity : (x, y, z : a) -> So (x < y) -> So (y < z) -> So (x < z)
+infix 6 <., <=., >., >=.
 
-  (<=) : a -> a -> Bool
-  x <= y = x < y || x == y
+interface Equ a => Ordu a where
+  (<.) : a -> a -> Bool
 
-  lteIsLtOrE : (x, y : a) -> x <= y = (x < y || x == y)
+  ltAntireflexivity : (x : a) -> So (not $ x <. x)
+  ltAntisymmetry : (x, y : a) -> So (x <. y) -> So (not $ y <. x)
+  ltTransitivity : (x, y, z : a) -> So (x <. y) -> So (y <. z) -> So (x <. z)
 
-  (>) : a -> a -> Bool
-  x > y = not $ x < y
+  (<=.) : a -> a -> Bool
+  x <=. y = x <. y || x ==. y
 
-  ltInverseOfGt : (x, y : a) -> x < y = y > x
+  lteIsLtOrE : (x, y : a) -> x <=. y = (x <. y || x ==. y)
 
-  (>=) : a -> a -> Bool
-  x >= y = not $ x <= y
+  (>.) : a -> a -> Bool
+  x >. y = not $ x <. y
 
-  gteIsGtOrE : (x, y : a) -> x >= y = (x > y || x == y)
+  ltInverseOfGt : (x, y : a) -> x <. y = y >. x
+
+  (>=.) : a -> a -> Bool
+  x >=. y = not $ x <=. y
+
+  gteIsGtOrE : (x, y : a) -> x >=. y = (x >. y || x ==. y)

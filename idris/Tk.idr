@@ -2,6 +2,9 @@ module Tk
 
 import Data.So
 
+%default total
+%access public export
+
 interface Eq a where
   (==) : a -> a -> Bool
 
@@ -10,6 +13,7 @@ interface Eq a where
   eqTransitivity : (x, y, z : a) -> So (x == y) -> So (y == z) -> So (x == z)
 
   (/=) : a -> a -> Bool
+  x /= y = not $ x == y
 
   eqIsNotNeq : (x, y : a) -> x == y = not (x /= y)
 
@@ -21,13 +25,16 @@ interface Tk.Eq a => Ord a where
   ltTransitivity : (x, y, z : a) -> So (x < y) -> So (y < z) -> So (x < z)
 
   (<=) : a -> a -> Bool
+  x <= y = x < y || x == y
 
   lteIsLtOrE : (x, y : a) -> x <= y = (x < y || x == y)
 
   (>) : a -> a -> Bool
+  x > y = not $ x < y
 
   ltInverseOfGt : (x, y : a) -> x < y = y > x
 
   (>=) : a -> a -> Bool
+  x >= y = not $ x <= y
 
   gteIsGtOrE : (x, y : a) -> x >= y = (x > y || x == y)

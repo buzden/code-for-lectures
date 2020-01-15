@@ -13,10 +13,10 @@ class Eq a where
 
   (%==) :: Sing (x::a) -> Sing (y::a) -> Sing (x == y)
 
-  eqRefl :: Sing (x::a) -> x == x :~: True
+  eqRefl :: Sing (x::a) -> x == x :~: 'True
   eqSymm :: Sing (x::a) -> Sing (y::a) -> x == y :~: y == x
   eqTran :: Sing (x::a) -> Sing (y::a) -> Sing (z::a)
-         -> x == y :~: True -> y == z :~: True -> x == z :~: True
+         -> x == y :~: 'True -> y == z :~: 'True -> x == z :~: 'True
 
 (==) :: (SingKind m, Eq m) => Demote m -> Demote m -> Bool
 x == y = withSomeSing x $ \sX ->
@@ -28,14 +28,14 @@ x == y = withSomeSing x $ \sX ->
 data List a = Nil | Cons a (List a)
 
 data instance Sing (xs :: List a) where
-    SNil  :: Sing Nil
-    SCons :: Sing x -> Sing xs -> Sing (Cons x xs)
+    SNil  :: Sing 'Nil
+    SCons :: Sing x -> Sing xs -> Sing ('Cons x xs)
 
 instance Eq a => Eq (List a) where
-  type Nil       == Nil       = True
-  type Nil       == Cons _ _  = False
-  type Cons _ _  == Nil       = False
-  type Cons x xs == Cons y ys = x == y && xs == ys
+  type 'Nil       == 'Nil       = 'True
+  type 'Nil       == 'Cons _ _  = 'False
+  type 'Cons _ _  == 'Nil       = 'False
+  type 'Cons x xs == 'Cons y ys = x == y && xs == ys
 
   SNil       %== SNil       = STrue
   SNil       %== SCons _ _  = SFalse

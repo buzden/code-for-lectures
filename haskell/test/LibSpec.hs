@@ -56,9 +56,11 @@ ordProperties _ = describe "Ord typeclass" do
 spec :: Spec
 spec = do
 
-  eqProperties (Proxy :: Proxy Int)
+  describe "Int type" do
+    let prx = Proxy :: Proxy Int
 
-  ordProperties (Proxy :: Proxy Int)
+    eqProperties prx
+    ordProperties prx
 
   describe "Semigroup" do
 

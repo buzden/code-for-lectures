@@ -7,6 +7,7 @@ module LibSpec where
 import Data.Proxy
 import Lib
 import Test.Hspec
+import Test.Hspec.QuickCheck (modifyMaxDiscardRatio)
 import Test.QuickCheck
 
 eqProperties :: forall a. (Eq a, Arbitrary a, Show a) => Proxy a -> Spec
@@ -20,7 +21,7 @@ eqProperties _ = describe "Eq typeclass" do
     it "== symmetry" . property $ \(x :: a) (y :: a) ->
       (x == y) === (y == x)
 
-    it "== transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
+    modifyMaxDiscardRatio (*10^6) . it "== transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
       x == y && y == z ==> x == z
 
   describe "/= operation" do

@@ -17,7 +17,7 @@ interface Equ a where
   (/=.) : a -> a -> Bool
   x /=. y = not $ x ==. y
 
-  eqIsNotNeq : (x, y : a) -> x ==. y = not (x /=. y)
+  neqIsNotEq : (x, y : a) -> x ==. y = not (x /=. y)
 
 infix 6 <., <=., >., >=.
 
@@ -36,7 +36,7 @@ interface Equ a => Ordu a where
   (>.) : a -> a -> Bool
   x >. y = not $ x <. y
 
-  ltInverseOfGt : (x, y : a) -> So (x <. y) -> So(y >. x)
+  gtInverseOfLt : (x, y : a) -> So (x <. y) -> So(y >. x)
 
   (>=.) : a -> a -> Bool
   x >=. y = not $ x <=. y

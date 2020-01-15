@@ -55,6 +55,10 @@ ordProperties _ = describe "Ord typeclass" do
 spec :: Spec
 spec = do
 
+  eqProperties (Proxy :: Proxy Int)
+
+  ordProperties (Proxy :: Proxy Int)
+
   describe "Semigroup" do
 
     it "associates" pending -- . property $ \a b c ->

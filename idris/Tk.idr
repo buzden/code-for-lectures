@@ -11,7 +11,7 @@ interface Equ a where
   (==.) : a -> a -> Bool
 
   eqReflexivity  : (x : a) -> So (x ==. x)
-  eqSymmetricity : (x, y : a) -> So (x ==. y) -> So (y ==. x)
+  eqSymmetricity : (x, y : a) -> x ==. y = y ==. x
   eqTransitivity : (x, y, z : a) -> So (x ==. y) -> So (y ==. z) -> So (x ==. z)
 
   (/=.) : a -> a -> Bool

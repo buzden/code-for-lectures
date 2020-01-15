@@ -45,17 +45,17 @@ ordProperties _ = describe "Ord typeclass" do
 
   describe "<= operation" do
 
-    it "<= is < or ==" . property $ \(x :: a) (y :: a) ->
+    it "is < or ==" . property $ \(x :: a) (y :: a) ->
       (x <= y) === (x < y || x == y)
 
   describe "> operation" do
 
-    it "> is not <" . property $ \(x :: a) (y :: a) ->
+    it "is not <" . property $ \(x :: a) (y :: a) ->
       (x > y) === (y < x)
 
   describe ">= operation" do
 
-    it ">= is > or =" . property $ \(x :: a) (y :: a) ->
+    it "is > or =" . property $ \(x :: a) (y :: a) ->
       (x >= y) === (x > y || x == y)
 
 spec :: Spec

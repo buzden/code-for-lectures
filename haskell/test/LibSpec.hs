@@ -10,8 +10,8 @@ import Test.Hspec
 import Test.Hspec.QuickCheck (modifyMaxDiscardRatio)
 import Test.QuickCheck
 
-eqProperties :: forall a. (Eq a, Arbitrary a, Show a) => Proxy a -> Spec
-eqProperties _ = describe "Eq typeclass" do
+eqLaws :: forall a. (Eq a, Arbitrary a, Show a) => Proxy a -> Spec
+eqLaws _ = describe "Eq typeclass" do
 
   describe "== operation" do
 
@@ -29,8 +29,8 @@ eqProperties _ = describe "Eq typeclass" do
     it "equals to not ==" . property $ \(x :: a) (y :: a) ->
       (x == y) === not (x /= y)
 
-ordProperties :: forall a. (Ord a, Arbitrary a, Show a) => Proxy a -> Spec
-ordProperties _ = describe "Ord typeclass" do
+ordLaws :: forall a. (Ord a, Arbitrary a, Show a) => Proxy a -> Spec
+ordLaws _ = describe "Ord typeclass" do
 
   describe "< operation" do
 
@@ -64,8 +64,8 @@ spec = do
   describe "Int type" do
     let prx = Proxy :: Proxy Int
 
-    eqProperties prx
-    ordProperties prx
+    eqLaws prx
+    ordLaws prx
 
   describe "Semigroup" do
 

@@ -54,3 +54,24 @@ instance Eq a => Eq (List a) where
 
   eqTran SNil SNil SNil Refl Refl = Refl
   eqTran xs ys zs p q = undefined
+
+--- Templated instance ---
+
+-- It does not work mainly because of name clash between our Eq and names in Data.Singletons.Prelude.Eq
+-- having fact that generated code uses `==` and `%==` in a sense of Data.Singletons.Prelude.Eq
+
+{-
+$(singletons [d|
+  data List' a = Nil' | Cons' a (List' a)
+
+  equals :: Eq a => List' a -> List' a -> Bool
+  equals Nil'         Nil'         = True
+  equals (Cons' x xs) (Cons' y ys) = x == y && equals xs ys
+  equals _            _            = False
+  |])
+
+instance Eq a => Eq (List' a) where
+  type xs == ys = Equals xs ys
+  (%==) = sEquals
+
+-}

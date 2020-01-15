@@ -4,34 +4,44 @@ import Tk
 
 Equ Nat where
   Z     ==. Z     = True
-  Z     ==. (S _) = False
-  (S _) ==. Z     = False
   (S n) ==. (S m) = n ==. m
+  _     ==. _     = False
 
   eqReflexivity Z     = Oh
   eqReflexivity (S n) = eqReflexivity n
 
-  eqSymmetricity Z     Z    Oh = Oh
-  eqSymmetricity (S k) (S m) p = eqSymmetricity k m p
+  eqSymmetricity Z     Z     = Refl
+  eqSymmetricity Z     (S _) = Refl
+  eqSymmetricity (S _) Z     = Refl
+  eqSymmetricity (S n) (S m) = eqSymmetricity n m
 
   eqTransitivity Z     Z     Z   Oh Oh = Oh
   eqTransitivity (S i) (S j) (S k) p q = eqTransitivity i j k p q
 
-  eqIsNotNeq n m with (n ==. m) proof p
+  neqIsNotEq n m with (n ==. m) proof p
     | True  = Refl
     | False = Refl
 
 Ordu Nat where
   Z     <. (S _) = True
   (S n) <. (S m) = n <. m
-  _     <. _     = False
+  Z     <. Z     = False
+  (S _) <. Z     = False
 
-  ltAntireflexivity n = ?lt_antiref_rhs
-  ltAntisymmetry n m p = ?lt_antisym_rhs
-  ltTransitivity n m k p q = ?lt_trans_rhs
+  ltAntireflexivity Z     = Oh
+  ltAntireflexivity (S k) = ltAntireflexivity k
 
-  lteIsLtOrE n m = ?lte_lt_e_rhs
+  ltAntisymmetry Z     Z     _ = Oh
+  ltAntisymmetry Z     (S k) _ = Oh
+  ltAntisymmetry (S k) Z     p = p
+  ltAntisymmetry (S k) (S j) p = ltAntisymmetry k j p
 
-  ltInverseOfGt n m = ?lt_inverse_gt_rhs
+  ltTransitivity Z     (S Z) (S$S _) Oh Oh = Oh
+  ltTransitivity Z     (S j) (S k)   Oh q  = Oh
+  ltTransitivity (S i) (S j) (S k)   p  q  = ltTransitivity i j k p q
 
-  gteIsGtOrE n m = ?gte_gt_e_rhs
+  lteIsLtOrE n m = Refl
+
+  gtInverseOfLt n m = Refl
+
+  gteIsGtOrE n m = rewrite eqSymmetricity n m in Refl

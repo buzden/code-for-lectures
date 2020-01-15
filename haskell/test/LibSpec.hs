@@ -15,14 +15,14 @@ eqLaws _ = describe "Eq typeclass" do
 
   describe "== operation" do
 
-    prop "== reflexivity" $ \(x::a) ->
+    prop "reflexivity" $ \(x::a) ->
       x == x
 
-    prop "== symmetry" $ \(x::a) (y::a) ->
+    prop "symmetry" $ \(x::a) (y::a) ->
       (x == y) === (y == x)
 
     modifyMaxDiscardRatio (*10^6) .
-      prop "== transitivity" $ \(x::a) (y::a) (z::a) ->
+      prop "transitivity" $ \(x::a) (y::a) (z::a) ->
         x == y && y == z ==> x == z
 
   describe "/= operation" do
@@ -35,13 +35,13 @@ ordLaws _ = describe "Ord typeclass" do
 
   describe "< operation" do
 
-    prop "< anti-reflexivity" $ \(x::a) ->
+    prop "anti-reflexivity" $ \(x::a) ->
       not (x < x)
 
-    prop "< anti-symmetry" $ \(x::a) (y::a) ->
+    prop "anti-symmetry" $ \(x::a) (y::a) ->
       x < y ==> not (y < x)
 
-    prop "< transitivity" $ \(x::a) (y::a) (z::a) ->
+    prop "transitivity" $ \(x::a) (y::a) (z::a) ->
       x < y && y < z ==> x < z
 
   describe "<= operation" do

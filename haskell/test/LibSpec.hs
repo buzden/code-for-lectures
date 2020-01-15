@@ -7,7 +7,7 @@ module LibSpec where
 import Data.Proxy
 import Lib
 import Test.Hspec
-import Test.Hspec.QuickCheck (modifyMaxDiscardRatio)
+import Test.Hspec.QuickCheck (modifyMaxDiscardRatio, prop)
 import Test.QuickCheck
 
 eqLaws :: forall a. (Eq a, Arbitrary a, Show a) => Proxy a -> Spec
@@ -15,18 +15,19 @@ eqLaws _ = describe "Eq typeclass" do
 
   describe "== operation" do
 
-    it "== reflexivity" . property $ \(x :: a) ->
+    prop "== reflexivity" $ \(x :: a) ->
       x == x
 
-    it "== symmetry" . property $ \(x :: a) (y :: a) ->
+    prop "== symmetry" $ \(x :: a) (y :: a) ->
       (x == y) === (y == x)
 
-    modifyMaxDiscardRatio (*10^6) . it "== transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
-      x == y && y == z ==> x == z
+    modifyMaxDiscardRatio (*10^6) .
+      prop "== transitivity" $ \(x :: a) (y :: a) (z :: a) ->
+        x == y && y == z ==> x == z
 
   describe "/= operation" do
 
-    it "equals to not ==" . property $ \(x :: a) (y :: a) ->
+    prop "equals to not ==" $ \(x :: a) (y :: a) ->
       (x == y) === not (x /= y)
 
 ordLaws :: forall a. (Ord a, Arbitrary a, Show a) => Proxy a -> Spec
@@ -34,28 +35,28 @@ ordLaws _ = describe "Ord typeclass" do
 
   describe "< operation" do
 
-    it "< anti-reflexivity" . property $ \(x :: a) ->
+    prop "< anti-reflexivity" $ \(x :: a) ->
       not (x < x)
 
-    it "< anti-symmetry" . property $ \(x :: a) (y :: a) ->
+    prop "< anti-symmetry" $ \(x :: a) (y :: a) ->
       x < y ==> not (y < x)
 
-    it "< transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
+    prop "< transitivity" $ \(x :: a) (y :: a) (z :: a) ->
       x < y && y < z ==> x < z
 
   describe "<= operation" do
 
-    it "is < or ==" . property $ \(x :: a) (y :: a) ->
+    prop "is < or ==" $ \(x :: a) (y :: a) ->
       (x <= y) === (x < y || x == y)
 
   describe "> operation" do
 
-    it "is not <" . property $ \(x :: a) (y :: a) ->
+    prop "is not <" $ \(x :: a) (y :: a) ->
       (x > y) === (y < x)
 
   describe ">= operation" do
 
-    it "is > or =" . property $ \(x :: a) (y :: a) ->
+    prop "is > or =" $ \(x :: a) (y :: a) ->
       (x >= y) === (x > y || x == y)
 
 spec :: Spec

@@ -34,11 +34,11 @@ interface Equ a => Ordu a where
   lteIsLtOrE : (x, y : a) -> x <=. y = (x <. y || x ==. y)
 
   (>.) : a -> a -> Bool
-  x >. y = not $ x <. y
+  x >. y = y <. x
 
-  gtInverseOfLt : (x, y : a) -> So (x <. y) -> So(y >. x)
+  gtInverseOfLt : (x, y : a) -> x <. y = y >. x
 
   (>=.) : a -> a -> Bool
-  x >=. y = not $ x <=. y
+  x >=. y = y <=. x
 
   gteIsGtOrE : (x, y : a) -> x >=. y = (x >. y || x ==. y)

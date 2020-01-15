@@ -18,7 +18,7 @@ eqProperties _ = describe "Eq typeclass" do
       x == x
 
     it "== symmetry" . property $ \(x :: a) (y :: a) ->
-      x == y ==> y == x
+      (x == y) === (y == x)
 
     it "== transitivity" . property $ \(x :: a) (y :: a) (z :: a) ->
       x == y && y == z ==> x == z
@@ -50,7 +50,7 @@ ordProperties _ = describe "Ord typeclass" do
   describe "> operation" do
 
     it "> is not <" . property $ \(x :: a) (y :: a) ->
-      (x > y) === not (x < y)
+      (x > y) === (y < x)
 
 spec :: Spec
 spec = do

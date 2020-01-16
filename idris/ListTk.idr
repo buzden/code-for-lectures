@@ -27,10 +27,7 @@ Equ a => Equ (List a) where
   eqTrans (x::xs) (y::ys) (z::zs) p q with (soSplit p, soSplit q)
     | ((rxy, rxys), (ryz, ryzs)) = eqTrans x y z rxy ryz && eqTrans xs ys zs rxys ryzs
 
-  neqIsNotEq []      []      = Refl
-  neqIsNotEq []      (x::xs) = Refl
-  neqIsNotEq (x::xs) []      = Refl
-  neqIsNotEq (x::xs) (y::ys) with (x ==. y && xs ==. ys)
+  neqIsNotEq xs ys with (xs ==. ys)
     | True  = Refl
     | False = Refl
 

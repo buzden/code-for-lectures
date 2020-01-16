@@ -39,8 +39,8 @@ Ordu Nat where
   ltTransitivity Z     (S j) (S k)   Oh _  = Oh
   ltTransitivity (S i) (S j) (S k)   p  q  = ltTransitivity i j k p q
 
-  lteIsLtOrE n m = Refl
+  lteIsLtOrE _ _ = Refl
 
-  gtInverseOfLt n m = Refl
+  gtInverseOfLt _ _ = Refl
 
   gteIsGtOrE n m = rewrite eqSymmetricity n m in Refl

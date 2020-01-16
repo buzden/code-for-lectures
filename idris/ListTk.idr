@@ -50,8 +50,8 @@ Ordu a => Ordu (List a) where
   ltTransitivity []     (_::_) (_::_) _ _ = Oh
   ltTransitivity (x::_) (y::_) (z::_) p q = ltTransitivity x y z p q
 
-  lteIsLtOrE n m = Refl
+  lteIsLtOrE _ _ = Refl
 
-  gtInverseOfLt n m = Refl
+  gtInverseOfLt _ _ = Refl
 
   gteIsGtOrE n m = rewrite eqSymmetricity n m in Refl

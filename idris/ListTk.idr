@@ -43,7 +43,7 @@ Ordu a => Ordu (List a) where
   ltArefl []     = Oh
   ltArefl (x::_) = ltArefl x
 
-  ltAsymm []     [] _     = Oh
+  ltAsymm []     []     _ = Oh
   ltAsymm []     (_::_) _ = Oh
   ltAsymm (x::_) (y::_) p = ltAsymm x y p
 

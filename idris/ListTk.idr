@@ -36,8 +36,7 @@ Equ a => Equ (List a) where
 
 Ordu a => Ordu (List a) where
   []     <. (_::_) = True
-  []     <. []     = False
-  (_::_) <. []     = False
+  _      <. []     = False
   (x::_) <. (y::_) = x <. y
 
   ltArefl []     = Oh

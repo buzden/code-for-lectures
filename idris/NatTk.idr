@@ -25,8 +25,7 @@ Equ Nat where
 Ordu Nat where
   Z     <. (S _) = True
   (S n) <. (S m) = n <. m
-  Z     <. Z     = False
-  (S _) <. Z     = False
+  _     <. Z     = False
 
   ltArefl Z     = Oh
   ltArefl (S k) = ltArefl k

@@ -33,11 +33,10 @@ Ordu Nat where
 
   ltAntisymmetry Z     Z     _ = Oh
   ltAntisymmetry Z     (S k) _ = Oh
-  ltAntisymmetry (S k) Z     p = p
   ltAntisymmetry (S k) (S j) p = ltAntisymmetry k j p
 
   ltTransitivity Z     (S Z) (S$S _) Oh Oh = Oh
-  ltTransitivity Z     (S j) (S k)   Oh q  = Oh
+  ltTransitivity Z     (S j) (S k)   Oh _  = Oh
   ltTransitivity (S i) (S j) (S k)   p  q  = ltTransitivity i j k p q
 
   lteIsLtOrE n m = Refl

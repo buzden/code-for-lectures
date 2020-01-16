@@ -7,16 +7,16 @@ Equ Nat where
   (S n) ==. (S m) = n ==. m
   _     ==. _     = False
 
-  eqReflexivity Z     = Oh
-  eqReflexivity (S n) = eqReflexivity n
+  eqRefl Z     = Oh
+  eqRefl (S n) = eqRefl n
 
-  eqSymmetricity Z     Z     = Refl
-  eqSymmetricity Z     (S _) = Refl
-  eqSymmetricity (S _) Z     = Refl
-  eqSymmetricity (S n) (S m) = eqSymmetricity n m
+  eqSymm Z     Z     = Refl
+  eqSymm Z     (S _) = Refl
+  eqSymm (S _) Z     = Refl
+  eqSymm (S n) (S m) = eqSymm n m
 
-  eqTransitivity Z     Z     Z   Oh Oh = Oh
-  eqTransitivity (S i) (S j) (S k) p q = eqTransitivity i j k p q
+  eqTrans Z     Z     Z   Oh Oh = Oh
+  eqTrans (S i) (S j) (S k) p q = eqTrans i j k p q
 
   neqIsNotEq n m with (n ==. m)
     | True  = Refl
@@ -28,19 +28,19 @@ Ordu Nat where
   Z     <. Z     = False
   (S _) <. Z     = False
 
-  ltAntireflexivity Z     = Oh
-  ltAntireflexivity (S k) = ltAntireflexivity k
+  ltArefl Z     = Oh
+  ltArefl (S k) = ltArefl k
 
-  ltAntisymmetry Z     Z     _ = Oh
-  ltAntisymmetry Z     (S k) _ = Oh
-  ltAntisymmetry (S k) (S j) p = ltAntisymmetry k j p
+  ltAsymm Z     Z     _ = Oh
+  ltAsymm Z     (S k) _ = Oh
+  ltAsymm (S k) (S j) p = ltAsymm k j p
 
-  ltTransitivity Z     (S Z) (S$S _) Oh Oh = Oh
-  ltTransitivity Z     (S j) (S k)   Oh _  = Oh
-  ltTransitivity (S i) (S j) (S k)   p  q  = ltTransitivity i j k p q
+  ltTrans Z     (S Z) (S$S _) Oh Oh = Oh
+  ltTrans Z     (S j) (S k)   Oh _  = Oh
+  ltTrans (S i) (S j) (S k)   p  q  = ltTrans i j k p q
 
   lteIsLtOrE _ _ = Refl
 
   gtInverseOfLt _ _ = Refl
 
-  gteIsGtOrE n m = rewrite eqSymmetricity n m in Refl
+  gteIsGtOrE n m = rewrite eqSymm n m in Refl

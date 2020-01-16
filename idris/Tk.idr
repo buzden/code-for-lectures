@@ -10,9 +10,9 @@ infix 6 ==., /=.
 interface Equ a where
   (==.) : a -> a -> Bool
 
-  eqReflexivity  : (x : a) -> So (x ==. x)
-  eqSymmetricity : (x, y : a) -> x ==. y = y ==. x
-  eqTransitivity : (x, y, z : a) -> So (x ==. y) -> So (y ==. z) -> So (x ==. z)
+  eqRefl  : (x : a) -> So (x ==. x)
+  eqSymm  : (x, y : a) -> x ==. y = y ==. x
+  eqTrans : (x, y, z : a) -> So (x ==. y) -> So (y ==. z) -> So (x ==. z)
 
   (/=.) : a -> a -> Bool
   x /=. y = not $ x ==. y
@@ -24,9 +24,9 @@ infix 6 <., <=., >., >=.
 interface Equ a => Ordu a where
   (<.) : a -> a -> Bool
 
-  ltAntireflexivity : (x : a) -> So (not $ x <. x)
-  ltAntisymmetry : (x, y : a) -> So (x <. y) -> So (not $ y <. x)
-  ltTransitivity : (x, y, z : a) -> So (x <. y) -> So (y <. z) -> So (x <. z)
+  ltArefl : (x : a) -> So (not $ x <. x)
+  ltAsymm : (x, y : a) -> So (x <. y) -> So (not $ y <. x)
+  ltTrans : (x, y, z : a) -> So (x <. y) -> So (y <. z) -> So (x <. z)
 
   (<=.) : a -> a -> Bool
   x <=. y = x <. y || x ==. y

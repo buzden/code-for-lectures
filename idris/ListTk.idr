@@ -13,19 +13,19 @@ Equ a => Equ (List a) where
   (x::xs) ==. (y::ys) = x ==. y && xs ==. ys
   _       ==. _       = False
 
-  eqReflexivity []      = Oh
-  eqReflexivity (x::xs) = eqReflexivity x && eqReflexivity xs
+  eqRefl []      = Oh
+  eqRefl (x::xs) = eqRefl x && eqRefl xs
 
-  eqSymmetricity []      []      = Refl
-  eqSymmetricity []      (x::xs) = Refl
-  eqSymmetricity (x::xs) []      = Refl
-  eqSymmetricity (x::xs) (y::ys) = rewrite eqSymmetricity x y in
-                                   rewrite eqSymmetricity xs ys in
-                                   Refl
+  eqSymm []      []      = Refl
+  eqSymm []      (x::xs) = Refl
+  eqSymm (x::xs) []      = Refl
+  eqSymm (x::xs) (y::ys) = rewrite eqSymm x y in
+                           rewrite eqSymm xs ys in
+                           Refl
 
-  eqTransitivity []      []       []     _ _ = Oh
-  eqTransitivity (x::xs) (y::ys) (z::zs) p q with (soSplit p, soSplit q)
-    | ((rxy, rxys), (ryz, ryzs)) = eqTransitivity x y z rxy ryz && eqTransitivity xs ys zs rxys ryzs
+  eqTrans []      []       []     _ _ = Oh
+  eqTrans (x::xs) (y::ys) (z::zs) p q with (soSplit p, soSplit q)
+    | ((rxy, rxys), (ryz, ryzs)) = eqTrans x y z rxy ryz && eqTrans xs ys zs rxys ryzs
 
   neqIsNotEq []      []      = Refl
   neqIsNotEq []      (x::xs) = Refl
@@ -40,18 +40,18 @@ Ordu a => Ordu (List a) where
   (_::_) <. []     = False
   (x::_) <. (y::_) = x <. y
 
-  ltAntireflexivity []     = Oh
-  ltAntireflexivity (x::_) = ltAntireflexivity x
+  ltArefl []     = Oh
+  ltArefl (x::_) = ltArefl x
 
-  ltAntisymmetry []     [] _     = Oh
-  ltAntisymmetry []     (_::_) _ = Oh
-  ltAntisymmetry (x::_) (y::_) p = ltAntisymmetry x y p
+  ltAsymm []     [] _     = Oh
+  ltAsymm []     (_::_) _ = Oh
+  ltAsymm (x::_) (y::_) p = ltAsymm x y p
 
-  ltTransitivity []     (_::_) (_::_) _ _ = Oh
-  ltTransitivity (x::_) (y::_) (z::_) p q = ltTransitivity x y z p q
+  ltTrans []     (_::_) (_::_) _ _ = Oh
+  ltTrans (x::_) (y::_) (z::_) p q = ltTrans x y z p q
 
   lteIsLtOrE _ _ = Refl
 
   gtInverseOfLt _ _ = Refl
 
-  gteIsGtOrE n m = rewrite eqSymmetricity n m in Refl
+  gteIsGtOrE n m = rewrite eqSymm n m in Refl

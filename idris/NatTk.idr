@@ -18,7 +18,7 @@ Equ Nat where
   eqTransitivity Z     Z     Z   Oh Oh = Oh
   eqTransitivity (S i) (S j) (S k) p q = eqTransitivity i j k p q
 
-  neqIsNotEq n m with (n ==. m) proof p
+  neqIsNotEq n m with (n ==. m)
     | True  = Refl
     | False = Refl
 

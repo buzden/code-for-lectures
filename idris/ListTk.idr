@@ -17,8 +17,8 @@ Equ a => Equ (List a) where
   eqRefl (x::xs) = eqRefl x && eqRefl xs
 
   eqSymm []      []      = Refl
-  eqSymm []      (x::xs) = Refl
-  eqSymm (x::xs) []      = Refl
+  eqSymm []      (_::_)  = Refl
+  eqSymm (_::_)  []      = Refl
   eqSymm (x::xs) (y::ys) = rewrite eqSymm x y in
                            rewrite eqSymm xs ys in
                            Refl

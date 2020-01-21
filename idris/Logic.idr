@@ -1,8 +1,8 @@
 module Logic
 
-notConj : Either (a -> Void) (b -> Void) -> (a, b) -> Void
-notConj (Left l)  (a, _) = l a
-notConj (Right r) (_, b) = r b
+disjNot : Either (a -> Void) (b -> Void) -> (a, b) -> Void
+disjNot (Left l)  (a, _) = l a
+disjNot (Right r) (_, b) = r b
 
 notEx : {p : a -> Type} -> ((x : a ** p x) -> Void) -> (y : a) -> p y -> Void
 notEx ne y py = ne (y ** py)

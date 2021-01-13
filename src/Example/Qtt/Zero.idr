@@ -4,6 +4,8 @@ import Control.Monad.State
 
 import Data.List
 
+import Syntax.WithProof
+
 %default total
 
 -------------------------
@@ -73,10 +75,27 @@ namespace SubsetAsLib
 
 namespace SubsetAsRecord
 
+  public export
   record Subset type pred where
     constructor Element
     value : type
     0 prf : pred value
+
+namespace FiltersDPair
+
+  filt : (p : a -> Bool) -> List a -> List (x : a ** p x = True)
+  filt p [] = []
+  filt p (x::xs) with (@@ p x)
+    filt p (x::xs) | (True  ** prf) = (x ** prf) :: filt p xs
+    filt p (_::xs) | (False ** _)   = filt p xs
+
+namespace FiltersSubset
+
+  filt : (p : a -> Bool) -> List a -> List $ Subset a (\x => p x = True)
+  filt p [] = []
+  filt p (x::xs) with (@@ p x)
+    filt p (x::xs) | (True  ** prf) = Element x prf :: filt p xs
+    filt p (_::xs) | (False ** _)   = filt p xs
 
 ---------------------
 --- Parametricity ---

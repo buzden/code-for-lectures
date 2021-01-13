@@ -1,0 +1,9 @@
+package qtt-lecture-materials
+
+authors = "Denis Buzdalov"
+
+modules = Example.Qtt.Zero
+
+depends = contrib
+
+sourcedir = "src"

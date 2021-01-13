@@ -85,17 +85,17 @@ namespace FiltersDPair
 
   filt : (p : a -> Bool) -> List a -> List (x : a ** p x = True)
   filt p [] = []
-  filt p (x::xs) with (@@ p x)
-    filt p (x::xs) | (True  ** prf) = (x ** prf) :: filt p xs
-    filt p (_::xs) | (False ** _)   = filt p xs
+  filt p (x::xs) = case @@ p x of
+    (True  ** prf) => (x ** prf) :: filt p xs
+    (False ** _)   => filt p xs
 
 namespace FiltersSubset
 
   filt : (p : a -> Bool) -> List a -> List $ Subset a (\x => p x = True)
   filt p [] = []
-  filt p (x::xs) with (@@ p x)
-    filt p (x::xs) | (True  ** prf) = Element x prf :: filt p xs
-    filt p (_::xs) | (False ** _)   = filt p xs
+  filt p (x::xs) = case @@ p x of
+    (True  ** prf) => Element x prf :: filt p xs
+    (False ** _)   => filt p xs
 
 ---------------------
 --- Parametricity ---

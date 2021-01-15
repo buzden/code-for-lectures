@@ -3,6 +3,7 @@ module Example.Qtt.Zero
 import Control.Monad.State
 
 import Data.List
+import Data.List.Quantifiers
 
 import Syntax.WithProof
 
@@ -96,6 +97,14 @@ namespace FiltersSubset
   filt p (x::xs) = case @@ p x of
     (True  ** prf) => Element x prf :: filt p xs
     (False ** _)   => filt p xs
+
+-----------------------
+--- Match on erased ---
+-----------------------
+
+pushIn : (xs : List a) -> (0 _ : All p xs) -> List $ Subset a p
+pushIn []      []      = []
+pushIn (x::xs) (p::ps) = Element x p :: pushIn xs ps
 
 ---------------------
 --- Parametricity ---

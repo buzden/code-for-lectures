@@ -25,6 +25,28 @@ namespace FileRemoveGrantExample
     remove rm
     pure True
 
+--------------------------------
+--- Handle closing liability ---
+--------------------------------
+
+namespace HandleClosingLiability
+
+  data File : Type where [external]
+
+  data ClosingLia : File -> Type where [external]
+
+  openFile  : (fl : File) -> IO $ Maybe $ ClosingLia fl
+  readChar  : (fl : File) -> (0 _ : ClosingLia fl) => IO Char
+  closeFile : ClosingLia h -> IO ()
+
+  whatever : File -> IO $ Either String Char
+  whatever fl = do
+    Just cl <- openFile fl
+      | Nothing => pure $ Left "Can't open"
+    c <- readChar fl
+    closeFile cl
+    pure $ Right c
+
 ----------------------
 --- First examples ---
 ----------------------

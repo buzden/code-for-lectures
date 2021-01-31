@@ -150,6 +150,135 @@ namespace EnterLin
          let () = destroy res' in
          r
 
+----------------------------------------
+--- Pseudo-quantity-polymorphic pair ---
+----------------------------------------
+
+namespace PseudoQuantityPolymorphic
+
+  --data Usage = None | Linear | Unrestricted
+
+  namespace Pair
+
+    public export
+    data Pair' : {r : Usage} -> Type -> Type -> Type where
+      W0 : a -> (0 _ : b) -> Pair' {r=None}   a b
+      W1 : a -> (1 _ : b) -> Pair' {r=Linear} a b
+      WW : a -> b         -> Pair'            a b
+      --WW : a -> b -> {default Unrestricted 0 r : Usage} -> Pair' {r} a b
+
+    relax : Pair' {r=Unrestricted} a b -> Pair' a b
+    relax (WW x y) = WW x y
+    -- When `WW` is declared with a default.
+    --relax : Pair' {r=Unrestricted} a b -> {0 u : Usage} -> Pair' {r=u} a b
+    --relax (WW x y) = WW {r=u} x y
+
+    (.fst) : Pair' a b -> a
+    (.fst) (W0 x _) = x
+    (.fst) (W1 x _) = x
+    (.fst) (WW x _) = x
+
+    0 (.snd0) : (0 _ : Pair' {r=0} a b) -> b
+    (W0 _ y).snd0 = y
+    (WW _ y).snd0 = y
+
+    1 (.snd1) : (1 _ : Pair' {r=1} a b) -> b
+    (.snd1) (W1 _ y) = y
+    (.snd1) (WW _ y) = y
+
+    (.sndW) : (1 _ : Pair' {r=Unrestricted} a b) -> b
+    (.sndW) (WW _ y) = y
+
+  --- Not a pair ---
+
+  namespace SingleValue
+
+    public export
+    data V : {r : Usage} -> Type -> Type where
+      V0 : (0 _ : a) -> V {r=None}   a
+      V1 : (1 _ : a) -> V {r=Linear} a
+      VW : a         -> V            a
+
+    relax : V {r=Unrestricted} a -> V a
+    relax (VW x) = VW x
+
+    0 (.v0) : (0 _ : V {r=0} a) -> a
+    (.v0) (V0 x) = x
+    (.v0) (VW x) = x
+
+    1 (.v1) : (1 _ : V {r=1} a) -> a
+    (.v1) (V1 x) = x
+    (.v1) (VW x) = x
+
+    (.vW) : (1 _ : V {r=Unrestricted} a) -> a
+    (.vW) (VW x) = x
+
+  namespace List
+
+    public export
+    data LinOrW = Linear | W
+
+    public export
+    fromInteger : (0 x : Integer) -> (0 _ : x = 1) => LinOrW
+    fromInteger 1 @{Refl} = Linear
+
+    infixr 7 .::, ::., .::.
+
+    data List' : {l, r : LinOrW} -> Type -> Type where
+      Nil    : List' a
+      (::)   : a -> List' a -> List' {l=W,r=W} a
+      (.::)  : (1 _ : a) -> List' a -> List' {l=1,r=W} a
+      (::.)  : a -> (1 _ : List' a) -> List' {l=W,r=1} a
+      (.::.) : (1 _ : a) -> (1 _ : List' a) -> List' {l=1,r=1} a
+
+    relax : (1 _ : List' a) -> List' {l=1,r=1} a
+    relax [] = []
+    relax (x  ::  y) = x .::. y
+    relax (x .::  y) = x .::. y
+    relax (x  ::. y) = x .::. y
+    relax (x .::. y) = x .::. y
+
+    null : (1 _ : List' {l=W,r=W} a) -> Bool
+    null []     = True
+    null (x::y) = False
+
+    (++) : (1 _ : List' {l=1,r=1} a) -> (1 _ : List' {l=1,r=1} a) -> List' {l=1,r=1} a
+    [] ++ ys = ys
+    (x .::. xs) ++ ys = assert_total $ x .::. (relax xs ++ ys)
+
+    f : List' a -> List' a -> List' {l=1,r=1} a
+    f xs ys = relax xs ++ relax ys
+
+  namespace List'
+
+    data List' : {l, r : LinOrW} -> Type -> Type where
+      Nil    : List' a
+      (::)   : a -> List' a -> List' a
+      (.::)  : (1 _ : a) -> List' a -> List' {l=1} a
+      (::.)  : a -> (1 _ : List' a) -> List' {r=1} a
+      (.::.) : (1 _ : a) -> (1 _ : List' a) -> List' {l=1,r=1} a
+
+    relax : (1 _ : List' a) -> List' {l=1,r=1} a
+    relax [] = []
+    relax (x  ::  y) = x  ::  y
+    relax (x .::  y) = x .::  y
+    relax (x  ::. y) = x  ::. y
+    relax (x .::. y) = x .::. y
+
+    null : (1 _ : List' {l=W,r=W} a) -> Bool
+    null []     = True
+    null (x::y) = False
+
+    (++) : (1 _ : List' {l=1,r=1} a) -> (1 _ : List' {l=1,r=1} a) -> List' {l=1,r=1} a
+    [] ++ ys = ys
+    (x  ::  xs) ++ ys = assert_total $ x .::. (relax xs ++ ys)
+    (x .::  xs) ++ ys = assert_total $ x .::. (relax xs ++ ys)
+    (x  ::. xs) ++ ys = assert_total $ x .::. (relax xs ++ ys)
+    (x .::. xs) ++ ys = assert_total $ x .::. (relax xs ++ ys)
+
+    f : List' a -> List' a -> List' {l=1,r=1} a
+    f xs ys = relax xs ++ relax ys
+
 ----------------------
 --- Linear file IO ---
 ----------------------

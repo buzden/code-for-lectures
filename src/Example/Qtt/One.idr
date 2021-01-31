@@ -158,15 +158,26 @@ namespace FileIO
 
   data FileName = MkFileName String
 
+  FromString FileName where
+    fromString = MkFileName
+
   data FileHandler : FileName -> Type where [external]
 
   withOpenFile : LinearIO io =>
                  (fn : FileName) ->
-                 (success : (1 _ : FileHandler fn) -> L io ()) ->
-                 (fail : L io ()) ->
-                 L io ()
+                 (success : (1 _ : FileHandler fn) -> L io a) ->
+                 (fail : L io a) ->
+                 L io a
 
-  closeFile : (1 _ : FileHandler fn) -> L io ()
+  closeFile : LinearIO io => (1 _ : FileHandler fn) -> L io ()
 
-  readLine : (1 _ : FileHandler fn) ->
+  readLine : LinearIO io =>
+             (1 _ : FileHandler fn) ->
              L io {use=1} $ LPair' String $ FileHandler fn
+
+  f : LinearIO io => L io $ Maybe Bool
+  f = withOpenFile "foo" success (putStrLn "alas" *> pure Nothing) where
+    success : (1 _ : FileHandler _) -> L io $ Maybe Bool
+    success fh = do (str # fh) <- readLine fh
+                    closeFile fh
+                    pure $ Just (str == "x")

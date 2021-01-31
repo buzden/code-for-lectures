@@ -59,9 +59,9 @@ namespace AppendList
     Nil  : List' a
     (::) : (1 _ : a) -> (1 _ : List' a) -> List' a
 
-  append : (1 _ : List' a) -> (1 _ : List' a) -> List' a
-  append []      ys = ys
-  append (x::xs) ys = x :: append xs ys
+  (++) : (1 _ : List' a) -> (1 _ : List' a) -> List' a
+  []      ++ ys = ys
+  (x::xs) ++ ys = x :: xs ++ ys
 
   null : (_ : List' a) -> Bool
   null []     = True

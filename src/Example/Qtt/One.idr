@@ -27,6 +27,28 @@ namespace FileRemoveGrantExample
     remove rm
     pure True
 
+----------------------
+--- Disconnect arm ---
+----------------------
+
+namespace DisconnectArmExample
+
+  data Arm = LeftTopArm | RightTopArm
+
+  data DisconnectGrant : Arm -> Type where [external]
+
+  data DisResult = CantDisconnect | Disconnected
+
+  wantDisconnect : (arm : Arm) -> IO $ Maybe $ DisconnectGrant arm
+  disconnect : DisconnectGrant arm -> IO ()
+
+  whatever : IO DisResult
+  whatever = do
+    Just rm <- wantDisconnect LeftTopArm
+      | Nothing => pure CantDisconnect
+    disconnect rm
+    pure Disconnected
+
 --------------------------------
 --- Handle closing liability ---
 --------------------------------

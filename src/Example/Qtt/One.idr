@@ -363,7 +363,6 @@ namespace SimpleLoginProtocol
   data LoginState = Initial | LoggedIn JournalState | LoggedOut
 
   prefix 9 @
-
   data (@) : LoginState -> Type where [external]
 
   data Key : Type where [external]

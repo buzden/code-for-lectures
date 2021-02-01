@@ -352,3 +352,50 @@ namespace FileIO
       success fh = do (str # fh) <- AbstractedAPI.readLine fh
                       closeFile fh
                       pure $ Just (str == "x")
+
+-----------------------------
+--- Simple login protocol ---
+-----------------------------
+
+namespace SimpleLoginProtocol
+
+  data JournalState = NotYetCheckedIn | CheckedIn
+  data LoginState = Initial | LoggedIn JournalState | LoggedOut
+
+  data ProtocolState : LoginState -> Type where [external]
+
+  data Key : Type where [external]
+  data FailureReason = WrongKey | MalformedKey
+
+  interface (Monad m, LinearBind m) => SimpleProtocol m where
+    beginSession : (1 _ : (1 _ : ProtocolState Initial) -> L m a) -> L m a
+    endSession : (1 _ : ProtocolState LoggedOut) -> L m ()
+
+    login : (1 _ : ProtocolState LoggedOut) ->
+            (name : String) ->
+            (key : Key) ->
+            L m {use=1} $ Res Bool \case
+              True  => ProtocolState $ LoggedIn NotYetCheckedIn
+              False => LPair' FailureReason $ ProtocolState LoggedOut
+
+    logout : (1 _ : ProtocolState $ LoggedIn CheckedIn) -> L m {use=1} $ ProtocolState LoggedOut
+
+    updateKey : (1 _ : ProtocolState $ LoggedIn x) ->
+                (newKey : Key) ->
+                L m {use=1} $ LPair' (Maybe FailureReason) (ProtocolState $ LoggedIn x)
+
+    readSecret : (1 _ : ProtocolState $ LoggedIn x) -> L m {use=1} $ LPair' String $ ProtocolState $ LoggedIn x
+
+    checkIn : (1 _ : ProtocolState $ LoggedIn NotYetCheckedIn) ->
+              (info : String) ->
+              L m {use=1} $ ProtocolState $ LoggedIn CheckedIn
+
+  f : SimpleProtocol m => L m a
+  f = beginSession \p => do
+        ?foo
+
+---------------------
+--- Game protocol ---
+---------------------
+
+namespace GameLocalProtocol

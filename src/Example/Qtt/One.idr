@@ -292,21 +292,41 @@ namespace FileIO
 
   data FileHandler : FileName -> Type where [external]
 
-  withOpenFile : LinearIO io =>
-                 (fn : FileName) ->
-                 (success : (1 _ : FileHandler fn) -> L io a) ->
-                 (fail : L io a) ->
-                 L io a
+  namespace ImpureIO_API
 
-  closeFile : LinearIO io => (1 _ : FileHandler fn) -> L io ()
+    withOpenFile : LinearIO io =>
+                   (fn : FileName) ->
+                   (success : (1 _ : FileHandler fn) -> L io a) ->
+                   (fail : L io a) ->
+                   L io a
 
-  readLine : LinearIO io =>
-             (1 _ : FileHandler fn) ->
-             L io {use=1} $ LPair' String $ FileHandler fn
+    closeFile : LinearIO io => (1 _ : FileHandler fn) -> L io ()
 
-  f : LinearIO io => L io $ Maybe Bool
-  f = withOpenFile "foo" success (putStrLn "alas" *> pure Nothing) where
-    success : (1 _ : FileHandler _) -> L io $ Maybe Bool
-    success fh = do (str # fh) <- readLine fh
-                    closeFile fh
-                    pure $ Just (str == "x")
+    readLine : LinearIO io =>
+               (1 _ : FileHandler fn) ->
+               L io {use=1} $ LPair' String $ FileHandler fn
+
+    f : LinearIO io => L io $ Maybe Bool
+    f = withOpenFile "foo" success (putStrLn "alas" *> pure Nothing) where
+      success : (1 _ : FileHandler _) -> L io $ Maybe Bool
+      success fh = do (str # fh) <- readLine fh
+                      closeFile fh
+                      pure $ Just (str == "x")
+
+  namespace AbstractedAPI
+
+    interface (Monad io, LinearBind io) => FilesAPI io where
+      withOpenFile : (fn : FileName) ->
+                     (success : (1 _ : FileHandler fn) -> L io a) ->
+                     (fail : L io a) ->
+                     L io a
+      closeFile : (1 _ : FileHandler fn) -> L io ()
+      readLine : (1 _ : FileHandler fn) ->
+                 L io {use=1} $ LPair' String $ FileHandler fn
+
+    f : (FilesAPI io, HasLinearIO io) => L io $ Maybe Bool
+    f = withOpenFile "foo" success (putStrLn "alas" *> pure Nothing) where
+      success : (1 _ : FileHandler _) -> L io $ Maybe Bool
+      success fh = do (str # fh) <- AbstractedAPI.readLine fh
+                      closeFile fh
+                      pure $ Just (str == "x")

@@ -362,33 +362,35 @@ namespace SimpleLoginProtocol
   data JournalState = NotYetCheckedIn | CheckedIn
   data LoginState = Initial | LoggedIn JournalState | LoggedOut
 
-  data ProtocolState : LoginState -> Type where [external]
+  prefix 9 @
+
+  data (@) : LoginState -> Type where [external]
 
   data Key : Type where [external]
   data FailureReason = WrongKey | MalformedKey
 
   interface (Monad m, LinearBind m) => SimpleProtocol m where
-    beginSession : (1 _ : (1 _ : ProtocolState Initial) -> L m a) -> L m a
-    endSession : (1 _ : ProtocolState LoggedOut) -> L m ()
+    beginSession : (1 _ : (1 _ : @ Initial) -> L m a) -> L m a
+    endSession : (1 _ : @ LoggedOut) -> L m ()
 
-    login : (1 _ : ProtocolState LoggedOut) ->
+    login : (1 _ : @ LoggedOut) ->
             (name : String) ->
             (key : Key) ->
             L m {use=1} $ Res Bool \case
-              True  => ProtocolState $ LoggedIn NotYetCheckedIn
-              False => LPair' FailureReason $ ProtocolState LoggedOut
+              True  => @ LoggedIn NotYetCheckedIn
+              False => LPair' FailureReason (@ LoggedOut)
 
-    logout : (1 _ : ProtocolState $ LoggedIn CheckedIn) -> L m {use=1} $ ProtocolState LoggedOut
+    logout : (1 _ : @ LoggedIn CheckedIn) -> L m {use=1} (@ LoggedOut)
 
-    updateKey : (1 _ : ProtocolState $ LoggedIn x) ->
+    updateKey : (1 _ : @ LoggedIn x) ->
                 (newKey : Key) ->
-                L m {use=1} $ LPair' (Maybe FailureReason) (ProtocolState $ LoggedIn x)
+                L m {use=1} $ LPair' (Maybe FailureReason) (@ LoggedIn x)
 
-    readSecret : (1 _ : ProtocolState $ LoggedIn x) -> L m {use=1} $ LPair' String $ ProtocolState $ LoggedIn x
+    readSecret : (1 _ : @ LoggedIn x) -> L m {use=1} $ LPair' String (@ LoggedIn x)
 
-    checkIn : (1 _ : ProtocolState $ LoggedIn NotYetCheckedIn) ->
+    checkIn : (1 _ : @ LoggedIn NotYetCheckedIn) ->
               (info : String) ->
-              L m {use=1} $ ProtocolState $ LoggedIn CheckedIn
+              L m {use=1} (@ LoggedIn CheckedIn)
 
   f : SimpleProtocol m => L m a
   f = beginSession \p => do

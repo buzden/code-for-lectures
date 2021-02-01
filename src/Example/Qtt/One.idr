@@ -373,7 +373,7 @@ namespace SimpleLoginProtocol
     beginSession : (1 _ : (1 _ : @ Initial) -> L m a) -> L m a
     endSession : (1 _ : @ LoggedOut) -> L m ()
 
-    login : (1 _ : @ LoggedOut) ->
+    login : (1 _ : @ Initial) ->
             (name : String) ->
             (key : Key) ->
             L m {use=1} $ Res Bool \case

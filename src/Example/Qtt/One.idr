@@ -371,21 +371,19 @@ namespace SimpleLoginProtocol
 
   interface (Monad m, LinearBind m) => SimpleProtocol m where
     beginSession : (1 _ : (1 _ : @ Initial) -> L m a) -> L m a
-    endSession : (1 _ : @ LoggedOut) -> L m ()
+    endSession   : (1 _ : @ LoggedOut) -> L m ()
 
-    login : (1 _ : @ Initial) ->
-            (name : String) ->
-            (key : Key) ->
-            L m {use=1} $ Res Bool \case
-              True  => @ LoggedIn NotYetCheckedIn
-              False => LPair' FailureReason (@ LoggedOut)
-
+    login  : (1 _ : @ Initial) ->
+             (name : String) ->
+             (key : Key) ->
+             L m {use=1} $ Res Bool \case
+               True  => @ LoggedIn NotYetCheckedIn
+               False => LPair' FailureReason (@ LoggedOut)
     logout : (1 _ : @ LoggedIn CheckedIn) -> L m {use=1} (@ LoggedOut)
 
-    updateKey : (1 _ : @ LoggedIn x) ->
-                (newKey : Key) ->
-                L m {use=1} $ LPair' (Maybe FailureReason) (@ LoggedIn x)
-
+    updateKey  : (1 _ : @ LoggedIn x) ->
+                 (newKey : Key) ->
+                 L m {use=1} $ LPair' (Maybe FailureReason) (@ LoggedIn x)
     readSecret : (1 _ : @ LoggedIn x) -> L m {use=1} $ LPair' String (@ LoggedIn x)
 
     checkIn : (1 _ : @ LoggedIn NotYetCheckedIn) ->

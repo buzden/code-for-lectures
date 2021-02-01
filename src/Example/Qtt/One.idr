@@ -368,6 +368,10 @@ namespace SimpleLoginProtocol
   data Key : Type where [external]
   data FailureReason = WrongKey | MalformedKey
 
+  Show FailureReason where
+    show WrongKey     = "wrong key"
+    show MalformedKey = "malformed key"
+
   interface (Monad m, LinearBind m) => SimpleProtocol m where
     beginSession : (1 _ : (1 _ : @ Initial) -> L m a) -> L m a
     endSession   : (1 _ : @ LoggedOut) -> L m ()
@@ -389,9 +393,83 @@ namespace SimpleLoginProtocol
               (info : String) ->
               L m {use=1} (@ LoggedIn CheckedIn)
 
-  f : SimpleProtocol m => L m a
-  f = beginSession \p => do
-        ?foo
+  denisKey : Key
+
+  f1 : SimpleProtocol m => L m $ Either String Bool
+  f1 = beginSession \p => do
+         ?foo_1
+
+  f2 : SimpleProtocol m => L m $ Either String Bool
+  f2 = beginSession \p => do
+         ans <- login p "Denis" denisKey
+         ?foo_2
+
+  f3 : SimpleProtocol m => L m $ Either String Bool
+  f3 = beginSession \p => do
+         (True # s) <- login p "Denis" denisKey
+           | (False # (reason # s)) => ?foo_bad
+         ?foo_good
+
+  f4 : SimpleProtocol m => L m $ Either String Bool
+  f4 = beginSession \p => do
+         (True # p) <- login p "Denis" denisKey
+           | (False # (reason # s)) => do
+               endSession s
+               pure $ Left $ show reason
+         ?foo_4
+
+  f5 : SimpleProtocol m => L m $ Either String Bool
+  f5 = beginSession \p => do
+         (True # p) <- login p "Denis" denisKey
+           | (False # (reason # s)) => do
+               endSession s
+               pure $ Left $ show reason
+         sec # p <- readSecret p
+         ?foo_5
+
+  --f6 : SimpleProtocol m => L m $ Either String Bool
+  --f6 = beginSession \p => do
+  --       (True # p) <- login p "Denis" denisKey
+  --         | (False # (reason # s)) => do
+  --             endSession s
+  --             pure $ Left $ show reason
+  --       sec # p <- readSecret p
+  --       p <- logout p
+  --       ?foo_6
+
+  f7 : SimpleProtocol m => L m $ Either String Bool
+  f7 = beginSession \p => do
+         (True # p) <- login p "Denis" denisKey
+           | (False # (reason # s)) => do
+               endSession s
+               pure $ Left $ show reason
+         sec # p <- readSecret p
+         p <- checkIn p "read secret"
+         p <- logout p
+         ?foo_7
+
+  --f8 : SimpleProtocol m => L m $ Either String Bool
+  --f8 = beginSession \p => do
+  --       (True # p) <- login p "Denis" denisKey
+  --         | (False # (reason # s)) => do
+  --             endSession s
+  --             pure $ Left $ show reason
+  --       sec # p <- readSecret p
+  --       p <- checkIn p "read secret"
+  --       p <- logout p
+  --       pure $ Right $ sec == "foo"
+
+  f9 : SimpleProtocol m => L m $ Either String Bool
+  f9 = beginSession \p => do
+         (True # p) <- login p "Denis" denisKey
+           | (False # (reason # s)) => do
+               endSession s
+               pure $ Left $ show reason
+         sec # p <- readSecret p
+         p <- checkIn p "read secret"
+         p <- logout p
+         endSession p
+         pure $ Right $ sec == "foo"
 
 ---------------------
 --- Game protocol ---

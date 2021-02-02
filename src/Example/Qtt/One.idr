@@ -501,6 +501,8 @@ namespace MonadicMutalbeArrays
     read  : Fin size -> ar size a -> m a
     write : Fin size -> a -> ar size a -> m ()
 
+    freeze : ar size a -> m (Vect size a) -- unsafe!
+
   modify : MArray ar m => (a -> a) -> Fin size -> ar size a -> m ()
   modify f i arr = do
     x <- read i arr
@@ -517,7 +519,7 @@ namespace LinearMutableArrays
 
   data LArray : Nat -> Type -> Type where [external]
 
-  withNew : (size : Nat) -> (1 _ : (1 _ : LArray size a) -> Ur b) -> Ur b
+  withNew : (size : Nat) -> (1 _ : (1 _ : LArray size a) -> Ur b) -> b
   read    : Fin size -> (1 _ : LArray size a) -> LPair' a $ LArray size a
   write   : Fin size -> a -> (1 _ : LArray size a) -> LArray size a
 

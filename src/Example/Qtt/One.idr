@@ -117,8 +117,13 @@ namespace EnterLin
 
   namespace WrappingFunction
 
+    public export
+    record Ur a where
+      constructor MkUr
+      value : a
+
     export
-    runWithCreated : Params -> (1 _ : (1 _ : Resource) -> a) -> a
+    runWithCreated : Params -> (1 _ : (1 _ : Resource) -> Ur a) -> Ur a
     runWithCreated MkParams f = f $ MkResource 4
 
   depend : (1 _ : Resource) -> LPair' Result Resource
@@ -130,50 +135,54 @@ namespace EnterLin
 
   --- Usage of this simple linear interface ---
 
+  --x : Nat
+  --x = let r = runWithCreated MkParams (\x => x)
+  --     in ?foo -- resource leaks if instead of `Ur a` just `a` was used
+
   f1 : Result
-  f1 = runWithCreated MkParams \res =>
-         ?foo_f1
+  f1 = value $ runWithCreated MkParams \res =>
+         MkUr ?foo_f1
 
   f2 : Result
-  f2 = runWithCreated MkParams \res =>
+  f2 = value $ runWithCreated MkParams \res =>
          let (r # res') = depend res in
-         ?foo_f2
+         MkUr ?foo_f2
 
   --f3 : Result
-  --f3 = runWithCreated MkParams \res =>
+  --f3 = value $ runWithCreated MkParams \res =>
   --       let (r # res') = depend res in
   --       let (s # res'') = depend res in
-  --       ?foo_f3
+  --       MkUr ?foo_f3
 
   f4 : Result
-  f4 = runWithCreated MkParams \res =>
+  f4 = value $ runWithCreated MkParams \res =>
          let (r # res') = depend res in
          let (s # res'') = depend res' in
-         ?foo_f4
+         MkUr ?foo_f4
 
   f5 : Result
-  f5 = runWithCreated MkParams \res =>
+  f5 = value $ runWithCreated MkParams \res =>
          let (r # res') = depend res in
          let _ = destroy res' in
-         ?foo_f5
+         MkUr ?foo_f5
 
   --f6 : Result
-  --f6 = runWithCreated MkParams \res =>
+  --f6 = value $ runWithCreated MkParams \res =>
   --       let (r # res') = depend res in
   --       let _ = destroy res' in
-  --       r
+  --       MkUr r
 
   --f7 : Result
-  --f7 = runWithCreated MkParams \res =>
+  --f7 = value $ runWithCreated MkParams \res =>
   --       let (r # res') = depend res in
   --       let z = destroy res' in
-  --       r
+  --       MkUr r
 
   f8 : Result
-  f8 = runWithCreated MkParams \res =>
+  f8 = value $ runWithCreated MkParams \res =>
          let (r # res') = depend res in
          let () = destroy res' in
-         r
+         MkUr r
 
 ----------------------------------------
 --- Pseudo-quantity-polymorphic pair ---
@@ -506,10 +515,6 @@ namespace MonadicMutalbeArrays
                pure original
 
 namespace LinearMutableArrays
-
-  record Ur a where
-    constructor MkUr
-    value : a
 
   data LArray : Nat -> Type -> Type where [external]
 

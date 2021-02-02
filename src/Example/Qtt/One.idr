@@ -525,6 +525,9 @@ namespace LinearMutableArrays
   freeze : (1 _ : LArray size a) -> Ur $ Vect size a
 
   modify : (a -> a) -> Fin size -> (1 _ : LArray size a) -> LArray size a
+  modify f i arr = let x # arr = read i arr
+                    in write i (f x) arr
+
   modifyAll : (a -> a) -> (1 _ : LArray size a) -> LArray size a
 
   f : Fin n -> (1 _ : LArray n Nat) -> LPair' Nat $ LArray n Nat

@@ -2,6 +2,9 @@ module Example.Qtt.One
 
 import Control.Linear.LIO
 
+import Data.Fin
+import Data.Vect
+
 %default total
 
 ---------------------------------
@@ -476,3 +479,51 @@ namespace SimpleLoginProtocol
 ---------------------
 
 namespace GameLocalProtocol
+
+  -- Not done yet.
+
+-----------------------------------------
+--- Safe pure mutable data structures ---
+-----------------------------------------
+
+namespace MonadicMutalbeArrays
+
+  interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
+    new   : (size : Nat) -> m (ar size a)
+    read  : ar size a -> Fin size -> m a
+    write : ar size a -> Fin size -> a -> m ()
+
+  modify : MArray ar m => (a -> a) -> Fin size -> ar size a -> m ()
+  modify f i arr = do
+    x <- read arr i
+    write arr i (f x)
+
+  modifyAll : MArray ar m => (a -> a) -> ar size a -> m ()
+
+  f : MArray ar m => Fin n -> ar n Nat -> m Nat
+  f i arr = do original <- read arr i
+               modify (+1) i arr
+               pure original
+
+namespace LinearMutableArrays
+
+  record Ur a where
+    constructor MkUr
+    value : a
+
+  data LArray : Nat -> Type -> Type where [external]
+
+  withNew : (size : Nat) -> (1 _ : (1 _ : LArray size a) -> Ur b) -> Ur b
+  read    : Fin size -> (1 _ : LArray size a) -> LPair' a $ LArray size a
+  write   : Fin size -> a -> (1 _ : LArray size a) -> LArray size a
+
+  free   : (1 _ : LArray size a) -> ()
+  freeze : (1 _ : LArray size a) -> Ur $ Vect size a
+
+  modify : (a -> a) -> Fin size -> (1 _ : LArray size a) -> LArray size a
+  modifyAll : (a -> a) -> (1 _ : LArray size a) -> LArray size a
+
+  f : Fin n -> (1 _ : LArray n Nat) -> LPair' Nat $ LArray n Nat
+  f i arr = let original # arr = read i arr
+                arr = modify (+1) i arr
+             in original # arr

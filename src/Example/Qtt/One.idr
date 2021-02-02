@@ -497,18 +497,18 @@ namespace GameLocalProtocol
 namespace MonadicMutalbeArrays
 
   interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
-    new   : (size : Nat) -> m (ar size a)
-    read  : Fin size -> ar size a -> m a
-    write : Fin size -> a -> ar size a -> m ()
+    new   : (n : Nat) -> m (ar n a)
+    read  : Fin n -> ar n a -> m a
+    write : Fin n -> a -> ar n a -> m ()
 
-    freeze : ar size a -> m (Vect size a) -- unsafe!
+    freeze : ar n a -> m (Vect n a) -- unsafe!
 
-  modify : MArray ar m => (a -> a) -> Fin size -> ar size a -> m ()
+  modify : MArray ar m => (a -> a) -> Fin n -> ar n a -> m ()
   modify f i arr = do
     x <- read i arr
     write i (f x) arr
 
-  modifyAll : MArray ar m => (a -> a) -> ar size a -> m ()
+  modifyAll : MArray ar m => (a -> a) -> ar n a -> m ()
 
   f : MArray ar m => Fin n -> ar n Nat -> m Nat
   f i arr = do original <- read i arr
@@ -519,18 +519,18 @@ namespace LinearMutableArrays
 
   data LArray : Nat -> Type -> Type where [external]
 
-  withNew : (size : Nat) -> (1 _ : (1 _ : LArray size a) -> Ur b) -> b
-  read    : Fin size -> (1 _ : LArray size a) -> LPair' a $ LArray size a
-  write   : Fin size -> a -> (1 _ : LArray size a) -> LArray size a
+  withNew : (n : Nat) -> (1 _ : (1 _ : LArray n a) -> Ur b) -> b
+  read    : Fin n -> (1 _ : LArray n a) -> LPair' a $ LArray n a
+  write   : Fin n -> a -> (1 _ : LArray n a) -> LArray n a
 
-  free   : (1 _ : LArray size a) -> ()
-  freeze : (1 _ : LArray size a) -> Ur $ Vect size a
+  free   : (1 _ : LArray n a) -> ()
+  freeze : (1 _ : LArray n a) -> Ur $ Vect n a
 
-  modify : (a -> a) -> Fin size -> (1 _ : LArray size a) -> LArray size a
+  modify : (a -> a) -> Fin n -> (1 _ : LArray n a) -> LArray n a
   modify f i arr = let x # arr = read i arr
                     in write i (f x) arr
 
-  modifyAll : (a -> a) -> (1 _ : LArray size a) -> LArray size a
+  modifyAll : (a -> a) -> (1 _ : LArray n a) -> LArray n a
 
   f : Fin n -> (1 _ : LArray n Nat) -> LPair' Nat $ LArray n Nat
   f i arr = let original # arr = read i arr

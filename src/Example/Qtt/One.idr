@@ -498,18 +498,18 @@ namespace MonadicMutalbeArrays
 
   interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
     new   : (size : Nat) -> m (ar size a)
-    read  : ar size a -> Fin size -> m a
-    write : ar size a -> Fin size -> a -> m ()
+    read  : Fin size -> ar size a -> m a
+    write : Fin size -> a -> ar size a -> m ()
 
   modify : MArray ar m => (a -> a) -> Fin size -> ar size a -> m ()
   modify f i arr = do
-    x <- read arr i
-    write arr i (f x)
+    x <- read i arr
+    write i (f x) arr
 
   modifyAll : MArray ar m => (a -> a) -> ar size a -> m ()
 
   f : MArray ar m => Fin n -> ar n Nat -> m Nat
-  f i arr = do original <- read arr i
+  f i arr = do original <- read i arr
                modify (+1) i arr
                pure original
 

@@ -5,6 +5,8 @@ import Control.Monad.State
 import Data.List
 import Data.List.Quantifiers
 
+import Data.Maybe
+
 import Syntax.WithProof
 
 %default total
@@ -134,3 +136,42 @@ namespace With0Type
 
   id : {0 a : Type} -> a -> a
   id x = x
+
+--------------------------------------
+--- Need to not to have at runtime ---
+--------------------------------------
+
+namespace NotAtRuntime
+
+  -- data Nat = Z | S Nat
+
+  namespace Hiding
+
+    data BNat : Nat -> Type where
+      BZ : BNat 0
+      B0 : BNat n -> BNat (2*n)
+      B1 : BNat n -> BNat (1 + 2*n)
+
+    (+) : BNat n -> BNat m -> BNat (n + m)
+
+    toNat' : {n : Nat} -> BNat n -> Subset Nat (\k => k = n)
+    toNat' x = Element n Refl
+
+    toNat : BNat n -> Subset Nat (\k => k = n)
+    toNat BZ     = Element 0 Refl
+    toNat (B0 x) = let Element s prf = toNat x in
+                   Element (2*s) rewrite prf in Refl
+    toNat (B1 x) = let Element s prf = toNat x in
+                   Element (1 + 2*s) rewrite prf in Refl
+
+  namespace Exposing
+
+    data BNat : Nat -> Type where
+      BZ : BNat 0
+      B0 : {n : Nat} -> BNat n -> BNat (2*n)
+      B1 : {n : Nat} -> BNat n -> BNat (1 + 2*n)
+
+    toNat : BNat n -> Subset Nat (\k => k = n)
+    toNat BZ         = Element 0 Refl
+    toNat (B0 {n} _) = Element (2*n) Refl
+    toNat (B1 {n} _) = Element (1 + 2*n) Refl

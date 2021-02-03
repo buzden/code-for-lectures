@@ -16,14 +16,14 @@ zipWith : (a -> b -> c) -> List a -> List b -> List c
 --zipWithK = zipWith k
 
 interface Contravariant f where
-  contramap : (a -> b) -> f b -> f a
+  contramap : ((1 _ : a) -> b) -> f b -> f a
 
-[F] Contravariant (\c => c -> a) where
-  contramap pre f = f . pre
+[F] Contravariant (\c => (1 _ : c) -> a) where
+  contramap pre f x = f $ pre x
 
 lid : (1 _ : a) -> a
 lid x = x
 
 -- Would typecheck when linearity subtyping.
---bang : (a -> b) -> (1 _ : a) -> b
---bang = contramap lid
+bang : (a -> b) -> (1 _ : a) -> b
+bang f = contramap @{F} lid ?foo

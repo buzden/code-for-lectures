@@ -1,5 +1,10 @@
 module Example.Qtt.Range
 
-fromMaybe : (1 _ : Maybe a) -> a -> a
-fromMaybe (Just x) _ = x
-fromMaybe Nothing  d = d
+import Data.Vect
+
+fromMaybe' : a -> (1 _ : Maybe a) -> a
+fromMaybe' _ (Just x) = x
+fromMaybe' d Nothing  = d
+
+f : a -> Vect n (Maybe a) -> Vect n a
+f x = map (\y => fromMaybe' x y)

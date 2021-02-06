@@ -3,7 +3,6 @@ module Example.Qtt.One
 import Control.Linear.LIO
 
 import Data.Fin
-import Data.Vect
 
 %default total
 
@@ -496,12 +495,15 @@ namespace GameLocalProtocol
 
 namespace MonadicMutalbeArrays
 
+  export
+  data IArray : Nat -> Type -> Type where [external]
+
   interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
     new   : (n : Nat) -> a -> m (ar n a)
     read  : Fin n -> ar n a -> m a
     write : Fin n -> a -> ar n a -> m Unit
 
-    freeze : ar n a -> m (Vect n a) -- unsafe!
+    freeze : ar n a -> m (IArray n a) -- unsafe!
 
   modify : MArray ar m => (a -> a) -> Fin n -> ar n a -> m Unit
   modify f i arr = do
@@ -524,7 +526,7 @@ namespace LinearMutableArrays
   write   : Fin n -> a -> (1 _ : LArray n a) -> LArray n a
 
   free   : (1 _ : LArray n a) -> Unit
-  freeze : (1 _ : LArray n a) -> Ur $ Vect n a
+  freeze : (1 _ : LArray n a) -> Ur $ IArray n a
 
   modify : (a -> a) -> Fin n -> (1 _ : LArray n a) -> LArray n a
   modify f i arr = let x # arr = read i arr

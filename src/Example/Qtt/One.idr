@@ -497,7 +497,7 @@ namespace GameLocalProtocol
 namespace MonadicMutalbeArrays
 
   interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
-    new   : (n : Nat) -> m (ar n a)
+    new   : (n : Nat) -> a -> m (ar n a)
     read  : Fin n -> ar n a -> m a
     write : Fin n -> a -> ar n a -> m ()
 
@@ -519,7 +519,7 @@ namespace LinearMutableArrays
 
   data LArray : Nat -> Type -> Type where [external]
 
-  withNew : (n : Nat) -> (1 _ : (1 _ : LArray n a) -> Ur b) -> b
+  withNew : (n : Nat) -> a -> (1 _ : (1 _ : LArray n a) -> Ur b) -> b
   read    : Fin n -> (1 _ : LArray n a) -> LPair' a $ LArray n a
   write   : Fin n -> a -> (1 _ : LArray n a) -> LArray n a
 

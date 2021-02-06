@@ -18,7 +18,7 @@ namespace FileRemoveGrantExample
   data RmGrant : File -> Type where [external]
 
   wantToRemove : (fl : File) -> IO $ Maybe $ RmGrant fl
-  remove : RmGrant fl -> IO ()
+  remove : RmGrant fl -> IO Unit
 
   readFileFromUser : IO File
 
@@ -43,7 +43,7 @@ namespace DisconnectArmExample
   data DisResult = CantDisconnect | Disconnected
 
   wantDisconnect : (arm : Arm) -> IO $ Maybe $ DisconnectGrant arm
-  disconnect : DisconnectGrant arm -> IO ()
+  disconnect : DisconnectGrant arm -> IO Unit
 
   whatever : IO DisResult
   whatever = do
@@ -64,7 +64,7 @@ namespace HandleClosingLiability
 
   openFile  : (fl : File) -> IO $ Maybe $ ClosingLia fl
   readChar  : (fl : File) -> (0 _ : ClosingLia fl) => IO Char
-  closeFile : ClosingLia h -> IO ()
+  closeFile : ClosingLia h -> IO Unit
 
   whatever : File -> IO $ Either String Char
   whatever fl = do
@@ -333,7 +333,7 @@ namespace FileIO
                    (fail : L io a) ->
                    L io a
 
-    closeFile : LinearIO io => (1 _ : FileHandler fn) -> L io ()
+    closeFile : LinearIO io => (1 _ : FileHandler fn) -> L io Unit
 
     readLine : LinearIO io =>
                (1 _ : FileHandler fn) ->
@@ -353,7 +353,7 @@ namespace FileIO
                      (success : (1 _ : FileHandler fn) -> L io a) ->
                      (fail : L io a) ->
                      L io a
-      closeFile : (1 _ : FileHandler fn) -> L io ()
+      closeFile : (1 _ : FileHandler fn) -> L io Unit
       readLine : (1 _ : FileHandler fn) ->
                  L io {use=1} $ LPair' String $ FileHandler fn
 
@@ -385,7 +385,7 @@ namespace SimpleLoginProtocol
 
   interface (Monad m, LinearBind m) => SimpleProtocol m where
     beginSession : (1 _ : (1 _ : @ Initial) -> L m a) -> L m a
-    endSession   : (1 _ : @ LoggedOut) -> L m ()
+    endSession   : (1 _ : @ LoggedOut) -> L m Unit
 
     login  : (1 _ : @ Initial) ->
              (name : String) ->
@@ -499,16 +499,16 @@ namespace MonadicMutalbeArrays
   interface Monad m => MArray (0 ar : Nat -> Type -> Type) m where
     new   : (n : Nat) -> a -> m (ar n a)
     read  : Fin n -> ar n a -> m a
-    write : Fin n -> a -> ar n a -> m ()
+    write : Fin n -> a -> ar n a -> m Unit
 
     freeze : ar n a -> m (Vect n a) -- unsafe!
 
-  modify : MArray ar m => (a -> a) -> Fin n -> ar n a -> m ()
+  modify : MArray ar m => (a -> a) -> Fin n -> ar n a -> m Unit
   modify f i arr = do
     x <- read i arr
     write i (f x) arr
 
-  modifyAll : MArray ar m => (a -> a) -> ar n a -> m ()
+  modifyAll : MArray ar m => (a -> a) -> ar n a -> m Unit
 
   f : MArray ar m => Fin n -> ar n Nat -> m Nat
   f i arr = do original <- read i arr
@@ -523,7 +523,7 @@ namespace LinearMutableArrays
   read    : Fin n -> (1 _ : LArray n a) -> LPair' a $ LArray n a
   write   : Fin n -> a -> (1 _ : LArray n a) -> LArray n a
 
-  free   : (1 _ : LArray n a) -> ()
+  free   : (1 _ : LArray n a) -> Unit
   freeze : (1 _ : LArray n a) -> Ur $ Vect n a
 
   modify : (a -> a) -> Fin n -> (1 _ : LArray n a) -> LArray n a

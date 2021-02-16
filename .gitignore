@@ -1,3 +1,6 @@
 *.ibc
 .vscode
 build/
+.stack-work/
+*.cabal
+*~

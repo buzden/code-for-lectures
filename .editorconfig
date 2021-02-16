@@ -1,0 +1,21 @@
+# top-most EditorConfig file
+root = true
+
+# Defaults for every file
+[*]
+end_of_line = lf
+charset = utf-8
+
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{rst,md,tex,bib,sty,cls,yaml}]
+indent_style = space
+indent_size = 2
+
+[{Makefile,*.mk}]
+indent_style = tab
+
+[{*.idr,*.ipkg,*.lidr,*.hs}]
+indent_style = space
+indent_size = 2

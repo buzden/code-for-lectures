@@ -1,0 +1,13 @@
+package qtt-lecture-materials
+
+authors = "Denis Buzdalov"
+
+modules = Example.Qtt.Zero
+        , Example.Qtt.One
+        , Example.Qtt.Range
+        , Example.Qtt.N
+        , Example.Qtt.Problems
+
+depends = contrib
+
+sourcedir = "src"

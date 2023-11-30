@@ -1,0 +1,8 @@
+package presentation
+
+builddir = ".build"
+
+depends = bounded-doubles
+        , hedgehog
+
+modules = DepTypForSomewhatReal

@@ -1,0 +1,2 @@
+To build run `pack build DepTypForSomewhatReal.md`
+(assuming you've installed `pack` package manager: https://github.com/stefan-hoeck/idris2-pack/blob/main/INSTALL.md)

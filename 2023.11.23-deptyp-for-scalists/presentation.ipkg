@@ -2,7 +2,9 @@ package presentation
 
 builddir = ".build"
 
-depends = contrib
-        , tailrec
+depends = bounded-doubles
+        , hedgehog
 
-modules = DepTypForScalists
+executable = presentation
+
+main = Main

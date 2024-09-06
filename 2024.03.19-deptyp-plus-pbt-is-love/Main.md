@@ -1727,3 +1727,7 @@ function main() : void {
 Вопросы?
 ::::
 :::
+
+##
+
+\includegraphics[height=1.5\textheight,keepaspectratio=true]{fp_qr.png}

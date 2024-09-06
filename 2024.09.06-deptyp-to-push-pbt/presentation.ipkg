@@ -1,0 +1,10 @@
+package presentation
+
+builddir = ".build"
+
+depends = deptycheck
+        , hedgehog
+
+executable = presentation
+
+main = Main

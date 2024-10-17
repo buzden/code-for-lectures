@@ -1,0 +1,4 @@
+[custom.all.presentation]
+type = "local"
+path = "."
+ipkg = "presentation.ipkg"

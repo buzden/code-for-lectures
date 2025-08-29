@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "names": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "[A-Z][A-Za-z\\-]*[A-Za-z]"
+      },
+      "minItems": 2
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 150
+    },
+    "email": {
+      "type": "string",
+      "pattern": "[\\w.-]+@(?:[\\w-]+\\.)+\\w[\\w-]+"
+    }
+  }
+}

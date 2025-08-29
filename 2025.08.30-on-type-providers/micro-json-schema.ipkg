@@ -1,0 +1,10 @@
+package micro-json-schema
+
+sourcedir = "."
+builddir = ".build"
+
+depends = json-simple
+        , regex
+
+modules = MicroJsonSchema
+        , Test

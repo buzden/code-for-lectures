@@ -1,0 +1,4 @@
+[custom.all.micro-json-schema]
+type = "local"
+path = "."
+ipkg = "micro-json-schema.ipkg"
